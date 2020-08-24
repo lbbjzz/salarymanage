@@ -115,7 +115,7 @@ export default {
       }
     },
     onLogin () {
-      login (this.form.username, this.form.password).then(res => {
+      login(this.form.username, this.form.password).then(res => {
         console.log(res)
       })
     }
