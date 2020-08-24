@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import { login } from '@/network/login'
+
 export default {
   data() {
     return {
@@ -113,18 +115,8 @@ export default {
       }
     },
     onLogin () {
-      this.$refs.loginFormRef.validate(async value => {
-        if (!value) {
-          this.$message({
-            message: this.$t('language.login_error'),
-            type: 'warning'
-          })
-        } else {
-          this.$message({
-            message: this.$t('language.login_success'),
-            type: 'success'
-          })
-        }
+      login (this.form.username, this.form.password).then(res => {
+        console.log(res)
       })
     }
   }

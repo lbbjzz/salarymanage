@@ -10,6 +10,8 @@ import VueI18n from 'vue-i18n'
 /* ---------挂载全局使用----------- */
 Vue.use(ElementUI)
 Vue.use(VueI18n)
+Vue.use(axios)
+
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 

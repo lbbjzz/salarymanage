@@ -4,7 +4,7 @@ export const language = {
   passwordBox: 'Password',
   userBox_error: 'Please Enter Your Username!',
   passwordBox_error: 'Please Enter Your Password',
-  login_success: 'login Successfully!',
-  login_error: 'login Failed！Please Check Your Username and Password!',
+  login_success: 'Login Successfully!',
+  login_error: 'Login Failed！Please Check Your Username and Password!',
   login: 'Login'
 }
