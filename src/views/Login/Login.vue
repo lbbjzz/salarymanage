@@ -1,18 +1,36 @@
 <template>
     <div class="login">
+      <!--  顶部国际化组件-->
+      <div class="el-login-header">
+        <el-select
+            v-model="value"
+            @change="changeLangEvent(value)">
+          <el-option
+              v-for="(item, index) in options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+          ></el-option>
+        </el-select>
+      </div>
         <!--        登陆主体-->
         <el-form ref="loginFormRef" :model="form" class="login-form" :rules="rules">
-            <h3 class="title">企业工资管理系统</h3>
+            <h3 class="title">{{$t('language.title')}}</h3>
             <el-form-item prop="username">
-                <el-input type="text" v-model="form.username" auto-complete="off" placeholder="账号">
+                <el-input type="text" v-model="form.username" auto-complete="off" :placeholder="$t('language.userBox')">
                     <i slot="prefix" class="el-icon-user input-icon"></i>
                 </el-input>
             </el-form-item>
             <el-form-item prop="password">
                 <el-input type="password" v-model="form.password" auto-complete="off"
-                          placeholder="密码">
+                          :placeholder="$t('language.passwordBox')">
                     <i slot="prefix" class="el-icon-lock input-icon"></i>
                 </el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button style="width: 100%" type="primary" @click="onLogin">
+                {{$t('language.login')}}
+              </el-button>
             </el-form-item>
         </el-form>
 
@@ -27,13 +45,89 @@
 export default {
   data() {
     return {
+      // 国际化
+      value: 'zh-CN',
+      lang: 'zh-CN',
+      // activeName: 'first',
+      options: [
+        {
+          value: 'zh-CN',
+          label: '中文'
+        },
+        {
+          value: 'en-US',
+          label: 'English'
+        },
+        {
+          value: 'zh-HK',
+          label: '繁體'
+        }
+      ],
+
       form: {
         username: '',
         password: ''
+      },
+      rules: {
+        username: [
+          {
+            required: true,
+            message: this.$t('language.userBox_error'),
+            trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: this.$t('language.passwordBox_error'),
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 16,
+            message: '长度在3-16个字符',
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
-  methods: {}
+  methods: {
+    // 切换语言
+    changeLangEvent (value) {
+      switch (value) {
+        case 'zh-CN':
+          this.lang = value
+          this.$i18n.locale = this.lang // 关键语句
+          break
+        case 'en-US':
+          this.lang = value
+          this.$i18n.locale = this.lang // 关键语句
+          break
+        case 'zh-HK':
+          this.lang = value
+          this.$i18n.locale = this.lang // 关键语句
+          break
+        default:
+          break
+      }
+    },
+    onLogin () {
+      this.$refs.loginFormRef.validate(async value => {
+        if (!value) {
+          this.$message({
+            message: this.$t('language.login_error'),
+            type: 'warning'
+          })
+        } else {
+          this.$message({
+            message: this.$t('language.login_success'),
+            type: 'success'
+          })
+        }
+      })
+    }
+  }
 }
 </script>
 
@@ -78,11 +172,14 @@ export default {
     }
 
     .el-login-header {
-        position: fixed;
-        top: 0;
-        width: 100%;
-        text-align: right;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      text-align: right;
 
+      .el-select {
+        width: 100px;
+      }
     }
 
     .el-login-footer {
