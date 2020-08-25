@@ -129,7 +129,7 @@ export default {
             message: this.$t('language.login_success'),
             type: 'success'
           })
-          this.$router.push({ path: 'Main' })
+          this.$router.push({ path: 'Home' })
         }
       })
     }
