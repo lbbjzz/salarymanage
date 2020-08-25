@@ -49,6 +49,104 @@ export default {
   },
   data () {
     return {
+      // eslint-disable-next-line vue/no-dupe-keys
+      menu: [
+        {
+          path: '/home',
+          name: 'home',
+          label: '首页',
+          icon: 's-home',
+          url: 'Home/Home'
+        },
+        {
+          label: '基础信息管理',
+          icon: 's-management',
+          children: [
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '部门管理',
+              icon: 'office-building',
+              url: 'Book/Bookmanage'
+            },
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '岗位管理',
+              icon: 'suitcase',
+              url: 'Book/Bookmanage'
+            },
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '员工信息管理',
+              icon: 'postcard',
+              url: 'Book/Bookmanage'
+            }
+          ]
+        },
+        {
+          label: '工资',
+          icon: 'coin',
+          children: [
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '工资项目管理',
+              icon: 'date',
+              url: 'Book/Bookmanage'
+            },
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '固定工资管理',
+              icon: 'coin',
+              url: 'Book/Bookmanage'
+            },
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '项目数据录入',
+              icon: 'edit-outline',
+              url: 'Book/Bookmanage'
+            },
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '工资结算',
+              icon: 'coin',
+              url: 'Book/Bookmanage'
+            }
+          ]
+        },
+        {
+          label: '报表管理',
+          icon: 'user',
+          children: [
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '工资查询报表',
+              icon: 'tickets',
+              url: 'Book/Bookmanage'
+            },
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '打印工资条',
+              icon: 'printer',
+              url: 'Book/Bookmanage'
+            },
+            {
+              path: '/bookmanage',
+              name: 'bookmanage',
+              label: '工资统计报表',
+              icon: 's-data',
+              url: 'Book/Bookmanage'
+            }
+          ]
+        }
+      ]
     }
   },
   methods: {
