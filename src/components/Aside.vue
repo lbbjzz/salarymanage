@@ -30,9 +30,9 @@
 <script>
 
 export default {
-  created () {
-    this.menulist = this.menu
-  },
+  // created () {
+  //   this.menulist = this.menu
+  // },
   computed: {
     noChildren () {
       return this.menu.filter(item => !item.children)
@@ -42,10 +42,10 @@ export default {
     },
     isCollapse () {
       return this.$store.state.tab.isCollapse
-    },
-    menu () {
-      return this.$store.state.tab.menu
     }
+    // menu () {
+    //   return this.$store.state.tab.menu
+    // }
   },
   data () {
     return {
@@ -63,25 +63,25 @@ export default {
           icon: 's-management',
           children: [
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/department',
+              name: 'department',
               label: '部门管理',
               icon: 'office-building',
-              url: 'Book/Bookmanage'
+              url: 'Profile/DepartmentManage/DepartmentManage'
             },
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/class',
+              name: 'class',
               label: '岗位管理',
               icon: 'suitcase',
-              url: 'Book/Bookmanage'
+              url: 'Profile/ClassManage/ClassManage'
             },
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/employee',
+              name: 'employee',
               label: '员工信息管理',
               icon: 'postcard',
-              url: 'Book/Bookmanage'
+              url: 'Profile/EmployeeManage/EmployeeManage'
             }
           ]
         },
@@ -152,7 +152,7 @@ export default {
   methods: {
     clickMenu (item) {
       this.$router.push({ name: item.name })
-      this.$store.commit('selectMenu', item)
+      // this.$store.commit('selectMenu', item)
     }
   }
 }

@@ -28,6 +28,21 @@ const routes = [
         path: '/import_data',
         name: 'ImportData',
         component: () => import('../views/salaryManage/importData/ImportData')
+      },
+      {
+        path: '/Class',
+        name: 'class',
+        component: () => import('../views/Profile/ClassManage/ClassManage')
+      },
+      {
+        path: '/department',
+        name: 'department',
+        component: () => import('../views/Profile/DepartmentManage/DepartmentManage')
+      },
+      {
+        path: '/employee',
+        name: 'employee',
+        component: () => import('../views/Profile/EmployeeManage/EmployeeManage')
       }
     ]
   }
