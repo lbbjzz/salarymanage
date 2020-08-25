@@ -1,18 +1,19 @@
 <template>
     <div class="login">
-      <!--  顶部国际化组件-->
-      <div class="el-login-header">
-        <el-select
-            v-model="value"
-            @change="changeLangEvent(value)">
-          <el-option
-              v-for="(item, index) in options"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-          ></el-option>
-        </el-select>
-      </div>
+        <!--  顶部国际化组件-->
+        <div class="el-login-header">
+            <el-select
+                    v-model="value"
+                    @change="changeLangEvent(value)">
+                <el-option
+                        v-for="(item, index) in options"
+                        :key="index"
+                        :label="item.label"
+                        :value="item.value"
+                ></el-option>
+            </el-select>
+        </div>
+
         <!--        登陆主体-->
         <el-form ref="loginFormRef" :model="form" class="login-form" :rules="rules">
             <h3 class="title">{{$t('language.title')}}</h3>
@@ -28,9 +29,9 @@
                 </el-input>
             </el-form-item>
             <el-form-item>
-              <el-button style="width: 100%" type="primary" @click="onLogin">
-                {{$t('language.login')}}
-              </el-button>
+                <el-button style="width: 100%" type="primary" @click="onLogin">
+                    {{$t('language.login')}}
+                </el-button>
             </el-form-item>
         </el-form>
 
@@ -45,7 +46,7 @@
 import { login } from '@/network/login'
 
 export default {
-  data() {
+  data () {
     return {
       // 国际化
       value: 'zh-CN',
@@ -70,6 +71,7 @@ export default {
         username: '',
         password: ''
       },
+
       rules: {
         username: [
           {
@@ -116,7 +118,19 @@ export default {
     },
     onLogin () {
       login(this.form.username, this.form.password).then(res => {
-        console.log(res)
+        console.log(res.code)
+        if (res.code !== 2000) {
+          this.$message({
+            message: this.$t('language.login_error'),
+            type: 'warning'
+          })
+        } else {
+          this.$message({
+            message: this.$t('language.login_success'),
+            type: 'success'
+          })
+          this.$router.push({ path: 'Main' })
+        }
       })
     }
   }
@@ -130,12 +144,11 @@ export default {
         align-items: center;
         height: 100%;
         background-size: cover;
-        /*background-image: url("");*/
-        background-color: skyblue;
+        background-image: url("../../assets/login_background.jpg");
     }
 
     .title {
-        margin: 0 auto 30px auto;
+        margin: 0px auto 30px auto;
         text-align: center;
         color: #707070;
     }
@@ -161,17 +174,19 @@ export default {
             margin-left: 2px;
         }
 
+        .el-button {
+        }
     }
 
     .el-login-header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      text-align: right;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        text-align: right;
 
-      .el-select {
-        width: 100px;
-      }
+        .el-select {
+            width: 100px;
+        }
     }
 
     .el-login-footer {
@@ -182,8 +197,15 @@ export default {
         width: 100%;
         text-align: center;
         color: #fff;
+        font-family: Arial;
         font-size: 12px;
         letter-spacing: 1px;
     }
 
+    .verify-info {
+        text-align: center;
+        font-family: Arial;
+        color: black;
+        font-size: 13px;
+    }
 </style>

@@ -1,6 +1,6 @@
 import { request } from '@/network/request'
 
-export function login(username, password) {
+export function login (username, password) {
   return request({
     url: '/admin/adminLogin',
     method: 'post',

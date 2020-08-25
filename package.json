@@ -1,5 +1,5 @@
 {
-  "name": "salarymanage",
+  "name": "library-vue",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,30 +10,39 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "echarts": "^4.8.0",
     "element-ui": "^2.13.2",
-    "eslint-fix": "^1.0.3",
+    "js-cookie": "^2.2.1",
+    "mockjs": "^1.1.0",
     "vue": "^2.6.11",
-    "vue-i18n": "^8.21.0",
-    "vue-router": "^3.2.0",
+    "vue-cookie": "^1.1.4",
+    "vue-i18n": "^8.18.2",
+    "vue-monoplasty-slide-verify": "^1.1.2",
+    "vue-router": "^3.0.7",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.4.0",
-    "@vue/cli-plugin-eslint": "~4.4.0",
-    "@vue/cli-plugin-router": "~4.4.0",
-    "@vue/cli-plugin-vuex": "~4.4.0",
-    "@vue/cli-service": "~4.4.0",
+    "@vue/cli-plugin-babel": "^4.4.6",
+    "@vue/cli-plugin-eslint": "^4.4.6",
+    "@vue/cli-plugin-router": "^4.4.6",
+    "@vue/cli-plugin-vuex": "^4.4.6",
+    "@vue/cli-service": "^4.4.6",
     "@vue/eslint-config-standard": "^5.1.2",
-    "babel-eslint": "^10.1.0",
+    "babel-eslint": "^8.0.1",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-element": "^1.0.1",
     "vue-template-compiler": "^2.6.11"
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }
