@@ -90,18 +90,18 @@ export default {
           icon: 'coin',
           children: [
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/salaryManage',
+              name: 'salaryManage',
               label: '工资项目管理',
               icon: 'date',
-              url: 'Book/Bookmanage'
+              url: 'salaryManage/SalaryManage/SalaryManage'
             },
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/fixed',
+              name: 'fixed',
               label: '固定工资管理',
               icon: 'coin',
-              url: 'Book/Bookmanage'
+              url: 'salaryManage/FixedSalaryManage/FixedSalaryManage'
             },
             {
               path: '/import_data',
@@ -111,11 +111,11 @@ export default {
               url: 'salaryManage/importData/ImportData'
             },
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/salarySettlement',
+              name: 'salarySettlement',
               label: '工资结算',
               icon: 'coin',
-              url: 'Book/Bookmanage'
+              url: 'salaryManage/SalarySettlement/FixedSalarySettlement'
             }
           ]
         },
@@ -124,25 +124,25 @@ export default {
           icon: 'user',
           children: [
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/salarySearch',
+              name: 'salarySearch',
               label: '工资查询报表',
               icon: 'tickets',
-              url: 'Book/Bookmanage'
+              url: 'FormManage/SalarySearchForm/SalarySearchForm'
             },
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/salaryPrint',
+              name: 'salaryPrint',
               label: '打印工资条',
               icon: 'printer',
-              url: 'Book/Bookmanage'
+              url: 'FormManage/SalaryPrint/SalaryPrint'
             },
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/salaryStatistics',
+              name: 'salaryStatistics',
               label: '工资统计报表',
               icon: 's-data',
-              url: 'Book/Bookmanage'
+              url: 'FormManage/SalaryStatistics/SalaryStatistics'
             }
           ]
         }

@@ -43,6 +43,36 @@ const routes = [
         path: '/employee',
         name: 'employee',
         component: () => import('../views/Profile/EmployeeManage/EmployeeManage')
+      },
+      {
+        path: '/fixed',
+        name: 'fixed',
+        component: () => import('../views/salaryManage/FixedSalaryManage/FixedSalaryManage')
+      },
+      {
+        path: '/salaryManage',
+        name: 'salaryManage',
+        component: () => import('../views/salaryManage/SalaryManage/SalaryManage')
+      },
+      {
+        path: '/salarySettlement',
+        name: 'salarySettlement',
+        component: () => import('../views/salaryManage/SalarySettlement/SalarySettlement')
+      },
+      {
+        path: '/salaryPrint',
+        name: 'salaryPrint',
+        component: () => import('../views/FormManage/SalaryPrint/SalaryPrint')
+      },
+      {
+        path: '/salarySearch',
+        name: 'salarySearch',
+        component: () => import('../views/FormManage/SalarySearchForm/SalarySearchForm')
+      },
+      {
+        path: '/salaryStatistics',
+        name: 'salaryStatistics',
+        component: () => import('../views/FormManage/SalaryStatistics/SalaryStatistics')
       }
     ]
   }
