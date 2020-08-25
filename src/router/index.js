@@ -16,13 +16,27 @@ const routes = [
   },
   {
     path: '/',
-    name: 'Main',
     component: () => import('../views/Main'),
     children: [
       {
         path: '/home',
-        name: 'Home',
+        name: 'home',
         component: () => import('../views/Home/Home')
+      },
+      {
+        path: '/Class',
+        name: 'class',
+        component: () => import('../views/Profile/ClassManage/ClassManage')
+      },
+      {
+        path: '/department',
+        name: 'department',
+        component: () => import('../views/Profile/DepartmentManage/DepartmentManage')
+      },
+      {
+        path: '/employee',
+        name: 'employee',
+        component: () => import('../views/Profile/EmployeeManage/EmployeeManage')
       }
     ]
   }
