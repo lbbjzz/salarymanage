@@ -118,7 +118,7 @@ export default {
     },
     onLogin () {
       login(this.form.username, this.form.password).then(res => {
-        console.log(res.code)
+        console.log(res)
         if (res.code !== 2000) {
           this.$message({
             message: this.$t('language.login_error'),

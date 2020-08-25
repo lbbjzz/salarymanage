@@ -1,30 +1,30 @@
 <template>
-        <el-menu
-                :collapse="isCollapse"
-                :default-active="$route.path"
-                class="el-menu-vertical-demo"
-                background-color="#545c64"
-                text-color="#fff"
-                active-text-color="#ffd04b"
-                style="height: 100vh;">
-            <el-menu-item :index="item.path" v-for="item in noChildren" :key="item.path" @click="clickMenu(item)">
-                <i :class="'el-icon-' + item.icon"></i>
-                <span slot="title">{{ item.label }}</span>
-            </el-menu-item>
-            <el-submenu :index="item.label" v-for="(item, index) in hasChildren" :key="index">
-                <template slot="title">
-                    <i :class="'el-icon-' + item.icon"></i>
-                    <span slot="title">{{ item.label }}</span>
-                </template>
-                <el-menu-item-group>
-                    <el-menu-item :index="subItem.path" v-for="(subItem, subIndex) in item.children" :key="subIndex"
-                                  @click="clickMenu(subItem)">
-                        <i :class="'el-icon-' + subItem.icon"></i>
-                        <span slot="title">{{ subItem.label }}</span>
-                    </el-menu-item>
-                </el-menu-item-group>
-            </el-submenu>
-        </el-menu>
+  <el-menu
+    :collapse="isCollapse"
+    :default-active="$route.path"
+    class="el-menu-vertical-demo"
+    background-color="#545c64"
+    text-color="#fff"
+    active-text-color="#ffd04b"
+    style="height: 100vh;">
+    <el-menu-item :index="item.path" v-for="item in noChildren" :key="item.path" @click="clickMenu(item)">
+      <i :class="'el-icon-' + item.icon"></i>
+      <span slot="title">{{ item.label }}</span>
+    </el-menu-item>
+    <el-submenu :index="item.label" v-for="(item, index) in hasChildren" :key="index">
+      <template slot="title">
+        <i :class="'el-icon-' + item.icon"></i>
+        <span slot="title">{{ item.label }}</span>
+      </template>
+      <el-menu-item-group>
+        <el-menu-item :index="subItem.path" v-for="(subItem, subIndex) in item.children" :key="subIndex"
+                      @click="clickMenu(subItem)">
+          <i :class="'el-icon-' + subItem.icon"></i>
+          <span slot="title">{{ subItem.label }}</span>
+        </el-menu-item>
+      </el-menu-item-group>
+    </el-submenu>
+  </el-menu>
 </template>
 
 <script>
@@ -104,11 +104,11 @@ export default {
               url: 'Book/Bookmanage'
             },
             {
-              path: '/bookmanage',
-              name: 'bookmanage',
+              path: '/import_data',
+              name: 'ImportData',
               label: '项目数据录入',
               icon: 'edit-outline',
-              url: 'Book/Bookmanage'
+              url: 'salaryManage/importData/ImportData'
             },
             {
               path: '/bookmanage',

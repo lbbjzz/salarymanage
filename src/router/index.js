@@ -23,6 +23,11 @@ const routes = [
         path: '/home',
         name: 'Home',
         component: () => import('../views/Home/Home')
+      },
+      {
+        path: '/import_data',
+        name: 'ImportData',
+        component: () => import('../views/salaryManage/importData/ImportData')
       }
     ]
   }
