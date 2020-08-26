@@ -42,3 +42,22 @@ export function deleteImport (importId) {
     }
   })
 }
+
+// 获取重复是员工数据
+export function listImportVoRepeatData () {
+  return request({
+    url: '/import/listImportVoRepeatData',
+    method: 'get'
+  })
+}
+
+// 删除员工考勤信息
+export function deleteRepeatImportData (id) {
+  return request({
+    url: '/import/deleteRepeatImportData',
+    method: 'post',
+    data: {
+      id
+    }
+  })
+}
