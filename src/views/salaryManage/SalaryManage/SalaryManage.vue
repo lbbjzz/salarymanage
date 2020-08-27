@@ -20,7 +20,8 @@
       :data="calculateVoList"
       stripe
       border
-      style="width: 100%;margin-top: 20px">
+      style="width: 100%;margin-top: 20px"
+      v-if="value === '1'">
       <el-table-column
         prop="id"
         label="ID"
@@ -40,24 +41,37 @@
         label="岗位名">
       </el-table-column>
       <el-table-column
-        prop="dailySickLeaveDeduction"
-        label="病假扣款 (天)"
-        width="180">
+        prop="basicSalary"
+        label="基本工资（元）">
       </el-table-column>
       <el-table-column
-        prop="dailyPersonalLeaveDeduction"
-        label="事假扣款（天）"
-        width="180">
+        prop="heatingSubsidy"
+        label="采暖补贴（元）">
+      </el-table-column>
+    </el-table>
+    <el-table
+      :data="calculateVoList"
+      stripe
+      border
+      style="width: 100%;margin-top: 20px"
+      v-if="value === '2'">
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="100">
       </el-table-column>
       <el-table-column
-        prop="dailyLateDeduction"
-        label="迟到扣款（天）"
-        width="180">
+        prop="employeeName"
+        label="员工名"
+        width="100">
       </el-table-column>
       <el-table-column
-        prop="dailyOvertimePay"
-        label="加班费（天）"
-        width="180">
+        prop="deptName"
+        label="部门名">
+      </el-table-column>
+      <el-table-column
+        prop="jobName"
+        label="岗位名">
       </el-table-column>
       <el-table-column
         prop="personalEndowmentInsuranceRate"
@@ -98,6 +112,128 @@
         prop="personalIncomeTaxRate"
         label="个人所得税（%）"
         width="180">
+      </el-table-column>
+      <el-table-column
+        prop="dailySickLeaveDeduction"
+        label="病假扣款 (元)"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="dailyPersonalLeaveDeduction"
+        label="事假扣款（元）"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="dailyLateDeduction"
+        label="迟到扣款（元）"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="dailyOvertimePay"
+        label="加班扣款（元）"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="backPay"
+        label="补发工资（元）"
+        width="180">
+      </el-table-column>
+      <el-table-column
+            fixed="right"
+            label="操作"
+            width="100">
+        <template slot-scope="scope">
+            <el-button size="mini" @click="handleApply(scope.$index, scope.row)">编辑</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-table
+      :data="calculateVoList"
+      stripe
+      border
+      style="width: 100%;margin-top: 20px"
+      v-if="value==='3'">
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="employeeName"
+        label="员工名"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="deptName"
+        label="部门名">
+      </el-table-column>
+      <el-table-column
+        prop="jobName"
+        label="岗位名">
+      </el-table-column>
+      <el-table-column
+        prop="sickLeaveDay"
+        label="病假天数 (天)"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="personalLeaveDay"
+        label="事假天数（天）"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="lateDay"
+        label="迟到天数（天）"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="overtimeDay"
+        label="加班天数（天）"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="backPay"
+        label="补发工资（元）"
+        width="180">
+      </el-table-column>
+      <el-table-column
+            fixed="right"
+            label="操作"
+            width="100">
+        <template slot-scope="scope">
+            <el-button size="mini" @click="handleApply(scope.$index, scope.row)">编辑</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-table
+      :data="calculateVoList"
+      stripe
+      border
+      style="width: 100%;margin-top: 20px"
+      v-if="value === '4'">
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="employeeName"
+        label="员工名"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="deptName"
+        label="部门名"
+        width="150">
+      </el-table-column>
+      <el-table-column
+        prop="jobName"
+        label="岗位名"
+        width="150">
+      </el-table-column>
+      <el-table-column
+        prop="netPay"
+        label="实发工资 (元)">
       </el-table-column>
       <el-table-column
             fixed="right"
