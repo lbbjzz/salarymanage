@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addJob()">确 定</el-button>
+          <el-button type="primary" @click="addJob('form')">确 定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -33,7 +33,7 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="edit = false">取 消</el-button>
-          <el-button type="primary" @click="editJob()">确 定</el-button>
+          <el-button type="primary" @click="editJob('editForm')">确 定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -103,6 +103,7 @@ import {
   IsExits,
   DeleteJobById, AddJob
 } from '@/network/Profile/classmanage'
+
 export default {
   name: 'ClassManage',
   data() {
@@ -111,7 +112,7 @@ export default {
       pageNo: 1,
       pageSize: 1,
       jobList: [],
-      formLabelWidth: '80px',
+      formLabelWidth: '100px',
       edit: false,
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -125,6 +126,84 @@ export default {
         name: '',
         salary: '',
         approvedNum: ''
+      },
+      addRules: {
+        name: [
+          {
+            required: true,
+            message: '请输入岗位名称',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 10,
+            message: '长度在 2 到 10 个字符',
+            trigger: 'blur'
+          }
+        ],
+        approvedNum: [
+          {
+            required: true,
+            message: '请输入岗位上限',
+            trigger: 'blur'
+          },
+          {
+            pattern: /^(?:[1-9]?\d|100)$/,
+            message: '岗位上限为0~100区间的数字',
+            trigger: 'blur'
+          }
+        ],
+        salary: [
+          {
+            required: true,
+            message: '请输入薪资上限',
+            trigger: 'blur'
+          },
+          {
+            pattern: /^((?!0)\d{1,5}|100000|0)$/,
+            message: '薪资范围为0~100000区间的数字',
+            trigger: 'blur'
+          }
+        ]
+      },
+      editRules: {
+        name: [
+          {
+            required: true,
+            message: '请输入部门名称',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 10,
+            message: '长度在 2 到 10 个字符',
+            trigger: 'blur'
+          }
+        ],
+        approvedNum: [
+          {
+            required: true,
+            message: '请输入岗位上限',
+            trigger: 'blur'
+          },
+          {
+            pattern: /^(?:[1-9]?\d|100)$/,
+            message: '岗位上限为0~100区间的数字',
+            trigger: 'blur'
+          }
+        ],
+        salary: [
+          {
+            required: true,
+            message: '请输入薪资上限',
+            trigger: 'blur'
+          },
+          {
+            pattern: /^((?!0)\d{1,5}|100000|0)$/,
+            message: '薪资范围为0~100000区间的数字',
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
@@ -148,32 +227,36 @@ export default {
       })
     },
     // 修改岗位信息
-    editJob() {
+    editJob(editForm) {
       // console.log(this.editForm.name, 'namee')
-      IsExits(this.editForm.name).then(res => {
-        // alert(this.editForm.name)
-        // // console.log(this.editForm.name)
-        // console.log(res, 'isExits')
-        if (!res.data.isExist) {
-          UpdateJob(this.editForm.id, this.editForm.name, this.editForm.salary, this.editForm.approvedNum).then(res => {
-            if (res.code === 2000) {
-              this.$message({
-                message: '修改成功！',
-                type: 'success'
+      this.$refs[editForm].validate((valid) => {
+        if (valid) {
+          IsExits(this.editForm.name).then(res => {
+            // alert(this.editForm.name)
+            // // console.log(this.editForm.name)
+            // console.log(res, 'isExits')
+            if (!res.data.isExist) {
+              UpdateJob(this.editForm.id, this.editForm.name, this.editForm.salary, this.editForm.approvedNum).then(res => {
+                if (res.code === 2000) {
+                  this.$message({
+                    message: '修改成功！',
+                    type: 'success'
+                  })
+                  this.getJobList()
+                  this.edit = false
+                } else {
+                  this.$message({
+                    message: '修改失败！',
+                    type: 'warning'
+                  })
+                }
               })
-              this.getJobList()
-              this.edit = false
             } else {
               this.$message({
-                message: '修改失败！',
+                message: '岗位名称重复！',
                 type: 'warning'
               })
             }
-          })
-        } else {
-          this.$message({
-            message: '岗位名称重复！',
-            type: 'warning'
           })
         }
       })
@@ -210,30 +293,39 @@ export default {
       })
     },
     // 增加岗位
-    addJob() {
+    addJob(form) {
       // alert(this.editForm.name)
       // alert(this.editForm.id)
-      IsExits(this.form.name).then(res => {
-        if (!res.data.isExist) {
-          AddJob(this.form.name, this.form.salary, this.form.approvedNum).then(res => {
-            console.log(res)
-            if (res.code === 2000) {
-              this.$message({
-                message: '增加成功！',
-                type: 'success'
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          IsExits(this.form.name).then(res => {
+            if (!res.data.isExist) {
+              AddJob(this.form.name, this.form.salary, this.form.approvedNum).then(res => {
+                console.log(res)
+                if (res.code === 2000) {
+                  this.$message({
+                    message: '增加成功！',
+                    type: 'success'
+                  })
+                  this.getJobList()
+                  this.dialogFormVisible = false
+                } else {
+                  this.$message({
+                    message: '增加失败！',
+                    type: 'warning'
+                  })
+                }
               })
-              this.getJobList()
-              this.dialogFormVisible = false
             } else {
               this.$message({
-                message: '增加失败！',
+                message: '部门名称重复！',
                 type: 'warning'
               })
             }
           })
         } else {
           this.$message({
-            message: '部门名称重复！',
+            message: '输入错误 请重新输入！',
             type: 'warning'
           })
         }
