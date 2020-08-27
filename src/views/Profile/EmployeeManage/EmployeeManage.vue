@@ -11,7 +11,7 @@
     <!--    员工添加-->
     <el-button style="float:left" type="primary" @click="dialogFormVisible = true">+ 添加</el-button>
     <el-dialog title="添加员工" :visible.sync="dialogFormVisible" style="text-align: center">
-      <el-form :model="form" :rules="addRules" ref="ruleForm">
+      <el-form :model="form" :rules="addRules" ref="form">
         <el-form-item label="姓名:" :label-width="formLabelWidth" prop="employeeName">
           <el-input v-model="form.employeeName" autocomplete="off"></el-input>
         </el-form-item>
@@ -61,13 +61,13 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addEmployee">确 定</el-button>
+          <el-button type="primary" @click="addEmployee('form')">确 定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
     <!--    员工编辑-->
-    <el-dialog title="员工信息编辑" :visible.sync="edit" modal-append-to-body="false" style="text-align: center">
-      <el-form :model="editForm" :rules="editRules">
+    <el-dialog title="员工信息编辑" :visible.sync="edit" style="text-align: center">
+      <el-form :model="editForm" :rules="editRules" ref="editForm">
         <el-form-item label="ID:" :label-width="formLabelWidth" prop="id">
           <el-input v-model="editForm.id" autocomplete="off" disabled></el-input>
         </el-form-item>
@@ -120,7 +120,7 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="edit = false">取 消</el-button>
-          <el-button type="primary" @click="editEmployee">确 定</el-button>
+          <el-button type="primary" @click="editEmployee('editForm')">确 定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -291,18 +291,20 @@ export default {
         ],
         idCard: [
           {
+            // type: 'number',
             required: true,
             message: '请输入身份证号',
             trigger: 'blur'
           },
           {
-            pattern: /^(\d{18,18}|\d{15,15}|\d{17,17}x)$/,
+            pattern: /^(\d{18,18})$/,
             message: '长度为18个数字',
             trigger: 'blur'
           }
         ]
       },
       editRules: {
+        id: [],
         employeeName: [
           {
             required: true,
@@ -354,12 +356,13 @@ export default {
         ],
         idCard: [
           {
+            // type: 'number',
             required: true,
             message: '请输入身份证号',
             trigger: 'blur'
           },
           {
-            pattern: /^(\d{18,18}|\d{15,15}|\d{17,17}x)$/,
+            pattern: /^(\d{18,18})$/,
             message: '长度为18个数字',
             trigger: 'blur'
           }
@@ -389,31 +392,41 @@ export default {
       _this.edit = true
     },
     // 添加员工信息
-    addEmployee() {
-      // alert(this.form.sex)
-      const dept = this.options.find(item => {
-        return item.name === this.form.deptName
-      })
-      // alert(this.editForm.jobName)
-      console.log(this.optionsTwo)
-      const job = this.optionsTwo.find(item => {
-        return item.name === this.form.jobName
-      })
-      let _sex = true
-      if (this.form.sex === '先生') {
-        _sex = false
-      }
-      AddEmployee(dept.id, this.form.employeeName, job.id, _sex, this.form.education, this.form.birth, this.form.idCard).then(res => {
-        if (res.code === 2000) {
-          this.$message({
-            message: '添加成功！',
-            type: 'success'
+    addEmployee(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          // alert('success')
+          // alert(this.form.sex)
+          const dept = this.options.find(item => {
+            return item.name === this.form.deptName
           })
-          this.dialogFormVisible = false
-          this.getEmployeeList()
+          // alert(this.editForm.jobName)
+          console.log(this.optionsTwo)
+          const job = this.optionsTwo.find(item => {
+            return item.name === this.form.jobName
+          })
+          let _sex = true
+          if (this.form.sex === '先生') {
+            _sex = false
+          }
+          AddEmployee(dept.id, this.form.employeeName, job.id, _sex, this.form.education, this.form.birth, this.form.idCard).then(res => {
+            if (res.code === 2000) {
+              this.$message({
+                message: '添加成功！',
+                type: 'success'
+              })
+              this.dialogFormVisible = false
+              this.getEmployeeList()
+            } else {
+              this.$message({
+                message: '添加失败！',
+                type: 'warning'
+              })
+            }
+          })
         } else {
           this.$message({
-            message: '添加失败！',
+            message: '输入错误 请重新输入！',
             type: 'warning'
           })
         }
@@ -421,7 +434,6 @@ export default {
     },
     // 修改员工信息
     editEmployee() {
-      // alert(this.form.sex)
       let _sex = true
       if (this.form.sex === '先生') {
         _sex = false
@@ -450,7 +462,7 @@ export default {
           this.edit = false
         } else {
           this.$message({
-            message: '添加失败！',
+            message: '修改失败！',
             type: 'warning'
           })
         }
@@ -509,6 +521,7 @@ export default {
         }
       })
     },
+    // 分页
     pageNoChange(pageNo) {
       this.pageNo = pageNo
       this.getEmployeeList()
