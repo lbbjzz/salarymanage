@@ -29,7 +29,7 @@
       <el-col :span="12">
         <div v-if="existRepeatData">
           <el-alert
-            title="员工考勤数据重复"
+            title="本月员工考勤数据重复"
             :closable="false"
             type="error"
             description="当前员工考勤数据存在重复！！"
@@ -113,6 +113,7 @@
       <!--分页-->
       <div style="float: right;margin-top: 30px;margin-bottom: 20px;margin-right: 60px">
         <el-pagination
+          v-if="total > pageSize"
           background
           :current-page="pageNo"
           :page-size="pageSize"
@@ -259,7 +260,7 @@ export default {
   created () {
     this.getListImportVoRepeatData()
     const date = new Date()
-    this.time = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
+    this.time = date.getFullYear() + '年' + (date.getMonth() + 1) + '月'
   },
   mounted () {
     this.getImportVoList()
@@ -277,6 +278,7 @@ export default {
     },
     // 文件上传成功
     uploadSuccess () {
+      this.getListImportVoRepeatData()
       this.getImportVoList()
     },
     // 编辑导入数据的表单打开
@@ -311,6 +313,7 @@ export default {
             message: '删除成功！',
             type: 'success'
           })
+          this.getListImportVoRepeatData()
           this.getImportVoList()
           return
         }
@@ -336,11 +339,13 @@ export default {
     // 获取重复的导入数据
     getListImportVoRepeatData () {
       listImportVoRepeatData().then(res => {
+        console.log(res)
         if (res.code === 2000) {
           this.importVoRepeatDataList = res.data.repeatDataImportVo
-          if (res.data.repeatDataImportVo.length > 0) {
-            this.existRepeatData = true
-          }
+          this.existRepeatData = res.data.repeatDataImportVo.length > 0
+        } else {
+          this.existRepeatData = false
+          this.show = false
         }
       })
     },
@@ -369,6 +374,7 @@ export default {
             type: 'success'
           })
           this.getListImportVoRepeatData()
+          this.getImportVoList()
         }
       })
     },

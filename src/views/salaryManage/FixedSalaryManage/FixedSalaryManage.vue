@@ -3,7 +3,7 @@
     <!--选择部门-->
     <div>
       <el-form ref="form" label-width="80px">
-        <el-form-item label="活动名称">
+        <el-form-item label="部门名称">
           <el-select v-model="deptId" filterable placeholder="请选择">
             <el-option
               v-for="item in allDept"
@@ -20,12 +20,18 @@
       </el-form>
     </div>
     <div>
+      <el-tooltip class="item" effect="dark" content="设置员工的采暖补贴！" placement="top">
+        <el-button type="primary" @click="editHeating" icon="el-icon-edit" circle></el-button>
+      </el-tooltip>
+      <el-tooltip class="item" effect="dark" content="增加员工采暖补贴" placement="top">
+        <el-button type="success" @click="addHeating" icon="el-icon-circle-plus-outline" circle ></el-button>
+      </el-tooltip>
       <el-tooltip class="item" effect="dark" content="删除选中的重复数据！" placement="top">
-        <el-button type="danger" icon="el-icon-delete" circle ></el-button>
+        <el-button type="danger" @click="deleteHeating" icon="el-icon-delete" circle ></el-button>
       </el-tooltip>
       <el-card class="box-card" style="margin-top: 20px">
         <div slot="header" class="clearfix">
-          <span>全部在岗人员固定工资</span>
+          <span>{{ content }}</span>
         </div>
         <el-table
           ref="multipleTable"
@@ -84,11 +90,18 @@
         </div>
       </el-card>
     </div>
+    <el-dialog width="20%" title="编辑选中员工的采暖补贴" :visible.sync="dialogFormVisible">
+      <el-input-number v-model="heatingSubsidy" :precision="2" :step="0.1" :max="10000" style="width: 100%"></el-input-number>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmChange">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listEmployeeFixedSalaryVo, allDept } from '../../../network/salaryManage/fixedSalaryManage'
+import { listEmployeeFixedSalaryVo, allDept, operationEmployeeFixedSalary } from '../../../network/salaryManage/fixedSalaryManage'
 
 export default {
   name: 'FixedSalaryManage',
@@ -103,7 +116,17 @@ export default {
       // 排序字段
       sortName: '',
       // 升序排序
-      sortOrder: true
+      sortOrder: true,
+      content: '全部在岗人员固定工资',
+      dialogFormVisible: false,
+      // 输入的采暖补贴
+      heatingSubsidy: 0,
+      selectEmployee: [],
+      // 操作方式 1表示编辑，2表示增加，3表示删
+      operation: 1,
+      // 员工的ID数组
+      employeeId: []
+
     }
   },
   mounted () {
@@ -131,6 +154,7 @@ export default {
     getAllDept() {
       allDept().then(res => {
         if (res.code === 2000) {
+          console.log(res.data.allDept)
           this.allDept = res.data.allDept
         }
       })
@@ -138,6 +162,7 @@ export default {
     // 复选框选择
     handleSelectionChange (row) {
       console.log(row)
+      this.selectEmployee = row
     },
     // 页号改变
     pageNoChange (pageNo) {
@@ -160,12 +185,74 @@ export default {
         this.$message.error('请选择部门！')
         return
       }
+      const deptName = this.allDept.find(item => {
+        // eslint-disable-next-line no-unused-expressions
+        return item.id === Number(this.deptId)
+      })
+      this.content = deptName.name + '员工固定工资'
       this.getListEmployeeFixedSalaryVo()
     },
     // 重置
     reset () {
       this.deptId = ''
+      this.content = '全部在岗人员固定工资'
       this.getListEmployeeFixedSalaryVo()
+    },
+    // 编辑员工采暖补贴
+    editHeating () {
+      if (this.selectEmployee.length === 0) {
+        this.$message.error('请选择员工！')
+        return
+      }
+      this.operation = 1
+      this.dialogFormVisible = true
+    },
+    addHeating () {
+      if (this.selectEmployee.length === 0) {
+        this.$message.error('请选择员工！')
+        return
+      }
+      this.operation = 2
+      this.dialogFormVisible = true
+    },
+    // 确认修改
+    confirmChange () {
+      this.getEmployeeId()
+      operationEmployeeFixedSalary(this.operation, this.employeeId, this.heatingSubsidy).then(res => {
+        if (res.code === 2000) {
+          this.$message.success('操作成功！')
+          this.getListEmployeeFixedSalaryVo()
+          this.dialogFormVisible = false
+        }
+      })
+    },
+    deleteHeating () {
+      if (this.selectEmployee.length === 0) {
+        this.$message.error('请选择员工！')
+        return
+      }
+      this.$confirm('此操作将删除员工采暖补贴, 是否继续?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.getEmployeeId()
+        this.operation = 3
+        operationEmployeeFixedSalary(this.operation, this.employeeId, this.heatingSubsidy).then(res => {
+          if (res.code === 2000) {
+            this.$message.success('操作成功！')
+            this.getListEmployeeFixedSalaryVo()
+          }
+        })
+      }).catch(() => {
+      })
+    },
+    getEmployeeId () {
+      const id = new Array(this.selectEmployee.length)
+      this.selectEmployee.forEach((item, index) => {
+        id[index] = item.id
+      })
+      this.employeeId = id
     }
   }
 }
