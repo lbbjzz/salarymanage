@@ -17,159 +17,122 @@
             style="width: 20%;float: right">
     </el-input>
     <el-table
-      :data="tableData"
+      :data="calculateVoList"
       stripe
       border
       style="width: 100%;margin-top: 20px">
       <el-table-column
         prop="id"
-        label="工资ID"
-        width="100">
-      </el-table-column>
-      <el-table-column
-        prop="employeeId"
-        label="员工ID"
+        label="ID"
         width="100">
       </el-table-column>
       <el-table-column
         prop="employeeName"
-        label="员工姓名">
+        label="员工名"
+        width="100">
       </el-table-column>
       <el-table-column
-        prop="basicSalary"
-        label="基本工资"
-        v-if="value==='1' | value===''">
+        prop="deptName"
+        label="部门名">
       </el-table-column>
       <el-table-column
-        prop="peInsurance"
-        label="个人支付养老保险"
-        width="180"
-        v-if="value==='2' | value===''">
+        prop="jobName"
+        label="岗位名">
       </el-table-column>
       <el-table-column
-        prop="ceInsurance"
-        label="公司支付养老保险医疗保险"
-        width="200"
-        v-if="value==='2' | value===''">
+        prop="dailySickLeaveDeduction"
+        label="病假扣款 (天)"
+        width="180">
       </el-table-column>
       <el-table-column
-        prop="puInsurance"
-        label="个人支付失业保险"
-        width="180"
-        v-if="value==='2' | value===''">
+        prop="dailyPersonalLeaveDeduction"
+        label="事假扣款（天）"
+        width="180">
       </el-table-column>
       <el-table-column
-        prop="paFund"
-        label="个人支付公积金"
-        width="180"
-        v-if="value==='2' | value===''">
+        prop="dailyLateDeduction"
+        label="迟到扣款（天）"
+        width="180">
       </el-table-column>
       <el-table-column
-        prop="caFund"
-        label="公司支付公积金"
-        width="180"
-        v-if="value==='2' | value===''">
+        prop="dailyOvertimePay"
+        label="加班费（天）"
+        width="180">
       </el-table-column>
       <el-table-column
-        prop="pmInsurance"
-        label="个人支付医保"
-        width="180"
-        v-if="value==='2' | value===''">
+        prop="personalEndowmentInsuranceRate"
+        label="个人支付养老保险（%）"
+        width="230">
       </el-table-column>
       <el-table-column
-        prop="cmInsurance"
-        label="公司支付医保"
-        width="180"
-        v-if="value==='2' | value===''">
+        prop="companyEndowmentInsuranceRate"
+        label="公司支付养老保险医疗保险（%）"
+        width="260">
       </el-table-column>
       <el-table-column
-        prop="piTax"
-        label="个人所得税"
-        width="180"
-        v-if="value==='2' | value===''">
+        prop="personalUnemploymentInsuranceRate"
+        label="个人支付失业保险（%）"
+        width="230">
       </el-table-column>
       <el-table-column
-        prop="slDeduction"
-        label="病假扣款"
-        width="180"
-        v-if="value==='2' | value===''">
+        prop="personalAccumulationFundRate"
+        label="个人支付公积金（%）"
+        width="230">
       </el-table-column>
       <el-table-column
-        prop="slDay"
-        label="病假天数"
-        width="180"
-        v-if="value==='3' | value===''">
+        prop="companyAccumulationFundRate"
+        label="公司支付公积金（%）"
+        width="230">
       </el-table-column>
       <el-table-column
-        prop="plDeduction"
-        label="事假扣款"
-        width="180"
-        v-if="value==='2' | value===''">
+        prop="personalMedicalInsuranceRate"
+        label="个人支付医保（%）"
+        width="230">
       </el-table-column>
       <el-table-column
-        prop="plDay"
-        label="事假天数"
-        width="180"
-        v-if="value==='3' | value===''">
+        prop="companyMedicalInsuranceRate"
+        label="公司支付医保（%）"
+        width="180">
       </el-table-column>
       <el-table-column
-        prop="lateDeduction"
-        label="迟到扣款"
-        width="180"
-        v-if="value==='2' | value===''">
-      </el-table-column>
-      <el-table-column
-        prop="lateDay"
-        label="迟到天数"
-        width="180"
-        v-if="value==='3' | value===''">
-      </el-table-column>
-      <el-table-column
-        prop="overtimePay"
-        label="加班工资"
-        width="180"
-        v-if="value==='2' | value===''">
-      </el-table-column>
-      <el-table-column
-        prop="overtimeDay"
-        label="加班天数"
-        width="180"
-        v-if="value==='3' | value===''">
-      </el-table-column>
-      <el-table-column
-        prop="backPay"
-        label="补发工资"
-        v-if="value==='3' | value===''">
-      </el-table-column>
-      <el-table-column
-        prop="shouldPay"
-        label="应发工资"
-        width="180"
-        v-if="value==='2' | value===''">
-      </el-table-column>
-      <el-table-column
-        prop="netPay"
-        label="实发工资"
-        v-if="value==='4'">
+        prop="personalIncomeTaxRate"
+        label="个人所得税（%）"
+        width="180">
       </el-table-column>
       <el-table-column
             fixed="right"
             label="操作"
-            width="200">
+            width="100">
         <template slot-scope="scope">
             <el-button size="mini" @click="handleApply(scope.$index, scope.row)">编辑</el-button>
-            <el-button @click="deleteById(scope.row)" size="mini" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!--分页-->
+    <div v-if="total > pageSize" style="float: right;margin-top: 30px;margin-bottom: 20px;margin-right: 60px">
+      <el-pagination
+        background
+        :current-page="pageNo"
+        :page-size="pageSize"
+        @current-change="pageNoChange"
+        layout="prev, pager, next"
+        :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
+import { listCalculateVo } from '../../../network/salaryManage/salaryManage'
+
 export default {
   name: 'SalaryManage',
   data () {
     return {
+      pageNo: 1,
+      pageSize: 10,
+      total: 0,
+      calculateVoList: [],
       options: [{
         value: '1',
         label: '固定项目'
@@ -281,6 +244,24 @@ export default {
         shouldPay: '1206000'
       }],
       value: ''
+    }
+  },
+  mounted () {
+    this.getListCalculateVo()
+  },
+  methods: {
+    getListCalculateVo () {
+      listCalculateVo(this.pageNo, this.pageSize).then(res => {
+        if (res.code === 2000) {
+          this.calculateVoList = res.data.calculateVoList
+          this.total = res.data.total
+        }
+      })
+    },
+    // 页号改变
+    pageNoChange (pageNo) {
+      this.pageNo = pageNo
+      this.getImportVoList()
     }
   }
 }
