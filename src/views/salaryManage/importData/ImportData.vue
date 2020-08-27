@@ -3,12 +3,6 @@
     <el-row :gutter="20">
       <el-col :span="12">
         <div>
-          <el-switch
-            @change="activeChange"
-            v-model="active"
-            active-text="上传时验证用户是否存在"
-            inactive-text="上传时不验证用户（速度快）">
-          </el-switch>
           <!--文件导入-->
           <div style="margin-bottom: 50px;margin-top: 20px">
             <el-upload
