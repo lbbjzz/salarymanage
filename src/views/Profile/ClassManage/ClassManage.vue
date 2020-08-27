@@ -1,241 +1,169 @@
 <template>
   <div class="manage">
-        <el-button style="float:left" type="primary" @click="dialogFormVisible = true">+ 添加</el-button>
-        <el-dialog title="添加岗位" :visible.sync="dialogFormVisible" style="text-align: center">
-            <el-form :model="form" :rules="addrules">
-                <el-form-item label="岗位名称:" :label-width="formLabelWidth" prop="postName">
-                    <el-input v-model="form.postName" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="核定人数:" :label-width="formLabelWidth" prop="approvedNum">
-                    <el-input v-model="form.approvedNum" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="岗位底薪:" :label-width="formLabelWidth" prop="salary">
-                    <el-input v-model="form.salary" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="addClass()">确 定</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-        <el-dialog title="岗位信息修改" :visible.sync="edit" modal-append-to-body="false" style="text-align: center">
-            <el-form ref="edit" :model="editForm" :rules="rules">
-                <el-form-item label="岗位名称:" prop="postName" :label-width="formLabelWidth" style="margin-left: 90px">
-                    <el-input v-model="editForm.postName" autocomplete="off" style="width: 60%;float: left">
-                        {{editForm.postName}}
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="核定人数:" prop="approvedNum" :label-width="formLabelWidth" style="margin-left: 90px">
-                    <el-input v-model="editForm.approvedNum" autocomplete="off" style="width: 60%;float: left">
-                        {{editForm.approvedNum}}
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="岗位底薪:" prop="salary" :label-width="formLabelWidth" style="margin-left: 90px">
-                    <el-input v-model="editForm.salary" autocomplete="off" style="width: 60%;float: left">
-                        {{editForm.salary}}
-                    </el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button @click="edit = false">取 消</el-button>
-                    <el-button type="primary" @click="editClass">确 定</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-        <el-table
-                :data="tableData"
-                height="120%"
-                style="width: 100%" stripe>
-            <el-table-column
-                    prop="id"
-                    label="ID"
-                    width="100">
-            </el-table-column>
-            <el-table-column
-                    prop="postName"
-                    label="岗位名称"
-                    width="180">
-            </el-table-column>
-            <el-table-column
-                    prop="approvedNum"
-                    label="核定人数"
-                    width="180">
-            </el-table-column>
-            <el-table-column
-                    prop="salary"
-                    label="岗位底薪"
-                    width="180">
-            </el-table-column>
-            <el-table-column
-                    fixed="right"
-                    label="操作"
-                    width="200">
-                <template slot-scope="scope">
-                    <el-button size="mini" @click="handleApply(scope.$index, scope.row)">编辑</el-button>
-                    <!--                    <el-button size="mini" type="danger" @click="deleteById(scope.row)">删除</el-button>-->
-                </template>
-            </el-table-column>
-        </el-table>
-    </div>
+    <!--    岗位修改-->
+    <el-dialog title="岗位信息编辑" :visible.sync="edit" style="text-align: center">
+      <el-form :model="editForm" :rules="editRules" ref="editForm">
+        <el-form-item label="岗位名称:" :label-width="formLabelWidth" prop="name" style="margin-left: 180px;">
+          <el-input v-model="editForm.name" autocomplete="off" style="width: 240px; float: left"></el-input>
+        </el-form-item>
+        <el-form-item label="岗位上限:" :label-width="formLabelWidth" prop="name" style="margin-left: 180px;">
+          <el-input v-model="editForm.approvedNum" autocomplete="off" style="width: 240px; float: left"></el-input>
+        </el-form-item>
+        <el-form-item label="薪水:" :label-width="formLabelWidth" prop="name" style="margin-left: 180px;">
+          <el-input v-model="editForm.salary" autocomplete="off" style="width: 240px; float: left"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="edit = false">取 消</el-button>
+          <el-button type="primary" @click="editClass()">确 定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <!--    岗位列表-->
+    <el-table
+      :data="jobList"
+      height="120%"
+      style="width: 100%" stripe>
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="80">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        label="岗位名称"
+        width="200">
+      </el-table-column>
+      <el-table-column
+        prop="approvedNum"
+        label="岗位上限"
+        width="200">
+      </el-table-column>
+      <el-table-column
+        prop="salary"
+        label="薪水"
+        width="200">
+      </el-table-column>
+      <el-table-column
+        prop="createTime"
+        label="创建时间"
+        width="240">
+      </el-table-column>
+      <el-table-column
+        prop="modifyTime"
+        label="修改时间"
+        width="240">
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="240">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleApply(scope.$index, scope.row)">编辑</el-button>
+          <el-button @click="deleteById(scope.row)" size="mini" type="danger">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      style="padding-top: 20px"
+      class="pager"
+      background layout="prev, pager, next"
+      :current-page="pageNo"
+      :page-size="pageSize"
+      :total="total"
+      @current-change="pageNoChange"
+      hide-on-single-page>
+    </el-pagination>
+  </div>
 </template>
 
 <script>
+
+import {
+  AllJob, UpdateClass
+} from '@/network/Profile/classmanage'
 export default {
   name: 'ClassManage',
-  data () {
+  data() {
     return {
       total: null,
-      tableData: [],
-      searchFrom: {
-        keyword: ''
-      },
-      formLabel: [
-        {
-          model: 'keyword',
-          label: ''
-        }
-      ],
+      pageNo: 1,
+      pageSize: 1,
+      jobList: [],
+      formLabelWidth: '80px',
       edit: false,
-      editForm: [],
-      formLabelWidth: '120px',
       dialogTableVisible: false,
       dialogFormVisible: false,
+      editForm: {
+        id: '',
+        name: '',
+        salary: '',
+        approvedNum: ''
+      },
       form: {
-        postName: '',
-        approvedNum: '',
-        salary: ''
-      },
-      rules: {
-        postName: [
-          {
-            required: true,
-            message: '请输入岗位名称！',
-            trigger: 'blur'
-          },
-          {
-            min: 2,
-            max: 8,
-            message: '长度在 2 到 8 个字符',
-            trigger: 'blur'
-          }
-        ],
-        approvedNum: [
-          {
-            required: true,
-            message: '请输入岗位核定人数！',
-            trigger: 'change'
-          }
-        ],
-        salary: [
-          {
-            required: true,
-            message: '请输入岗位底薪',
-            trigger: 'blur'
-          }
-        ]
-      },
-      addrules: {
-        postName: [
-          {
-            required: true,
-            message: '请输入岗位名称！',
-            trigger: 'blur'
-          },
-          {
-            min: 2,
-            max: 8,
-            message: '长度在 2 到 8 个字符',
-            trigger: 'blur'
-          }
-        ],
-        approvedNum: [
-          {
-            required: true,
-            message: '请输入岗位核定人数！',
-            trigger: 'change'
-          }
-        ],
-        salary: [
-          {
-            required: true,
-            message: '请输入岗位底薪',
-            trigger: 'blur'
-          }
-        ]
+        name: ''
       }
     }
   },
+  created() {
+    this.getClassList()
+  },
   methods: {
-    addClass () {
-      console.log(this.form)
-      this.$http.put('/api/user/save', this.form).then(res => {
-        console.log(res.data)
-      })
-      this.$message({
-        message: '添加成功！',
-        type: 'success'
-      })
-      clearTimeout(this.timer)
-      this.timer = setTimeout(() => {
-        window.location.reload()
-      }, 1000)
-      this.dialogFormVisible = false
-    },
-    editClass () {
-      console.log(this.editForm)
-      this.$http.put('/api/user/save', this.editForm).then(res => {
-        console.log(res.data)
-      })
-      this.edit = false
-      window.location.reload()
-    },
     handleApply: function (index, row) {
       const _this = this
       _this.editForm = row
       _this.edit = true
+    },
+    // 获取所有岗位信息
+    getClassList() {
+      AllJob(this.pageNo, this.pageSize).then(res => {
+        console.log(res)
+        if (res.code === 2000) {
+          this.jobList = res.data.jobs
+          this.total = res.data.total
+        }
+      })
+    },
+    // 修改岗位信息
+    editClass() {
+      UpdateClass(this.editForm.id, this.editForm.name, this.editForm.salary, this.editForm.approvedNum).then(res => {
+        console.log(res)
+        if (res.code === 2000) {
+          this.$message({
+            message: '修改成功！',
+            type: 'success'
+          })
+          this.getClassList()
+          this.edit = false
+        } else {
+          this.$message({
+            message: '修改失败！',
+            type: 'warning'
+          })
+        }
+      })
+    },
+    // 分页
+    pageNoChange(pageNo) {
+      this.pageNo = pageNo
+      this.getClassList()
     }
-  },
-  //   deleteById (row) {
-  //     const _this = this
-  //     _this.$confirm('确认删除吗, 是否继续?', '提示', {
-  //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     }).then(() => {
-  //       this.$http.get('/user/delete/' + row.id).then(function (resp) {
-  //         _this.$message({
-  //           type: 'success',
-  //           message: '删除成功'
-  //         })
-  //         clearTimeout(_this.timer)
-  //         _this.timer = setTimeout(() => {
-  //           window.location.reload()
-  //         }, 1000)
-  //       })
-  //     }).catch(() => {
-  //       this.$message({
-  //         type: 'info',
-  //         message: '已取消删除'
-  //       })
-  //     })
-  //   }
-  // },
-  created () {
-    const _this = this
-    this.$http.get('/api/user/list').then(function (resp) {
-      console.log(resp)
-      _this.tableData = resp.data
-    })
   }
 }
 </script>
 
-<style scoped>
-  .manage {
-    height: 70%;
-  }
+<style lang="scss" scoped>
+.manage {
+  height: 70%;
 
-  .pager {
-      position: absolute;
-      right: 20px;
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
   }
+}
+
+.pager {
+  position: absolute;
+  right: 20px;
+}
 </style>
