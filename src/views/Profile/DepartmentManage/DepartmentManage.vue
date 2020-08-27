@@ -2,14 +2,14 @@
   <div class="manage">
     <!--    增加部门-->
     <el-button style="float:left" type="primary" @click="dialogFormVisible = true">+ 添加</el-button>
-    <el-dialog title="部增加门信息" :visible.sync="dialogFormVisible" style="text-align: center">
+    <el-dialog title="增加部门信息" :visible.sync="dialogFormVisible" style="text-align: center">
       <el-form :model="form" :rules="addRules" ref="form">
         <el-form-item label="部门名称:" :label-width="formLabelWidth" prop="name" style="margin-left: 180px;">
           <el-input v-model="form.name" autocomplete="off" style="width: 240px; float: left"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addDepart()">确 定</el-button>
+          <el-button type="primary" @click="addDepart('form')">确 定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -21,7 +21,7 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="edit = false">取 消</el-button>
-          <el-button type="primary" @click="editDepart()">确 定</el-button>
+          <el-button type="primary" @click="editDepart('editForm')">确 定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -79,7 +79,6 @@ import {
   DepartList,
   AllDepart,
   UpdateDepart,
-  // FindDepartById,
   IsSame,
   AddDepart,
   DeleteDepartById
@@ -94,7 +93,7 @@ export default {
       pageNo: 1,
       pageSize: 1,
       departList: [],
-      formLabelWidth: '80px',
+      formLabelWidth: '100px',
       edit: false,
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -104,6 +103,36 @@ export default {
       },
       form: {
         name: ''
+      },
+      addRules: {
+        name: [
+          {
+            required: true,
+            message: '请输入部门名称',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 10,
+            message: '长度在 2 到 10 个字符',
+            trigger: 'blur'
+          }
+        ]
+      },
+      editRules: {
+        name: [
+          {
+            required: true,
+            message: '请输入部门名称',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 10,
+            message: '长度在 2 到 10 个字符',
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
@@ -123,60 +152,78 @@ export default {
       _this.edit = true
     },
     // 增加部门
-    addDepart() {
+    addDepart(form) {
       // alert(this.editForm.name)
       // alert(this.editForm.id)
-      IsSame(this.form.name).then(res => {
-        if (!res.data.isExist) {
-          AddDepart(this.form.name).then(res => {
-            console.log(res)
-            if (res.code === 2000) {
-              this.$message({
-                message: '增加成功！',
-                type: 'success'
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          IsSame(this.form.name).then(res => {
+            if (!res.data.isExist) {
+              AddDepart(this.form.name).then(res => {
+                console.log(res)
+                if (res.code === 2000) {
+                  this.$message({
+                    message: '增加成功！',
+                    type: 'success'
+                  })
+                  this.getDepartList()
+                  this.dialogFormVisible = false
+                } else {
+                  this.$message({
+                    message: '增加失败！',
+                    type: 'warning'
+                  })
+                }
               })
-              this.getDepartList()
-              this.dialogFormVisible = false
             } else {
               this.$message({
-                message: '增加失败！',
+                message: '部门名称重复！',
                 type: 'warning'
               })
             }
           })
         } else {
           this.$message({
-            message: '部门名称重复！',
+            message: '输入错误 请重新输入！',
             type: 'warning'
           })
         }
       })
     },
     // 修改部门信息
-    editDepart() {
+    editDepart(editForm) {
       // alert(this.editForm.name)
       // alert(this.editForm.id)
-      IsSame(this.editForm.name).then(res => {
-        if (!res.data.isExist) {
-          UpdateDepart(this.editForm.id, this.editForm.name).then(res => {
-            console.log(res)
-            if (res.code === 2000) {
-              this.$message({
-                message: '修改成功！',
-                type: 'success'
+      this.$refs[editForm].validate((valid) => {
+        if (valid) {
+          IsSame(this.editForm.name).then(res => {
+            if (!res.data.isExist) {
+              UpdateDepart(this.editForm.id, this.editForm.name).then(res => {
+                console.log(res)
+                if (res.code === 2000) {
+                  this.$message({
+                    message: '修改成功！',
+                    type: 'success'
+                  })
+                  this.getDepartList()
+                  this.edit = false
+                } else {
+                  this.$message({
+                    message: '修改失败！',
+                    type: 'warning'
+                  })
+                }
               })
-              this.getDepartList()
-              this.edit = false
             } else {
               this.$message({
-                message: '修改失败！',
+                message: '部门名称重复！',
                 type: 'warning'
               })
             }
           })
         } else {
           this.$message({
-            message: '部门名称重复！',
+            message: '输入错误 请重新输入！',
             type: 'warning'
           })
         }
@@ -198,7 +245,7 @@ export default {
               type: 'success',
               message: '删除成功'
             })
-            this.getEmployeeList()
+            this.getDepartList()
           } else {
             _this.$message({
               type: 'warning',
