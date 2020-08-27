@@ -48,7 +48,8 @@
           <el-table-column
             prop="id"
             sortable="custom"
-            label="员工编号">
+            label="编号"
+            width="90">
           </el-table-column>
           <el-table-column
             prop="name"
@@ -61,6 +62,10 @@
           <el-table-column
             prop="jobName"
             label="员工岗位">
+          </el-table-column>
+          <el-table-column
+            prop="salary"
+            label="基本工资">
           </el-table-column>
           <el-table-column
             prop="heatingSubsidy"
