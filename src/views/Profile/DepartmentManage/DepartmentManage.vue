@@ -85,7 +85,7 @@ import {
   DeleteDepartById
 } from '@/network/Profile/departmentmanage'
 export default {
-  name: 'EmployeeManage',
+  name: 'DepartmentManage',
   data() {
     return {
       options: [],
