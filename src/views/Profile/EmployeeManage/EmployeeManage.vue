@@ -46,6 +46,7 @@
             v-model="form.birth"
             type="datetime"
             placeholder="选择日期时间"
+            format="yyyy-MM-dd"
             style="float: left">
           </el-date-picker>
         </el-form-item>
