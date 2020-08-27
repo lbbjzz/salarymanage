@@ -23,3 +23,16 @@ export function allDept () {
     method: 'get'
   })
 }
+
+// 操作员工固定工资
+export function operationEmployeeFixedSalary (operation, employeeId, heatingSubsidy) {
+  return request({
+    url: '/employee/operationEmployeeFixedSalary',
+    method: 'post',
+    data: {
+      operation,
+      employeeId,
+      heatingSubsidy
+    }
+  })
+}
