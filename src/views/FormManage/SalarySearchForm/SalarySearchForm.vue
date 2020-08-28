@@ -23,22 +23,20 @@
           :value="item.value">
         </el-option>
       </el-select>
-      <el-button style="float: right;margin-left: 10px" type="primary" icon="el-icon-search" @click="search">搜索
+      <el-button style="float: right;margin-left: 10px" type="primary" icon="el-icon-search" @click="searchInfo">搜索
       </el-button>
       <el-input
-            placeholder="请输入需要查询的信息"
+            placeholder="请输入需要员工ID"
             prefix-icon="el-icon-search"
-            v-model="searchContent"
+            v-model="employeeId"
             style="width: 20%;float: right">
       </el-input>
     </div>
     <div></div>
     <el-table
-      :data="tableData"
+      :data="fixedSalaryList"
       stripe
-      style="width: 100%;margin-top: 20px"
-      @select="handleSelect"
-      ref="multipleTable">
+      style="width: 100%;margin-top: 20px">
       <el-table-column
         prop="deptId"
         label="部门编号"
@@ -69,15 +67,18 @@
       </el-table-column>
       <el-table-column
         prop="netPay"
-        label="实发工资">
+        label="实发工资"
+        width="180">
       </el-table-column>
       <el-table-column
         prop="basicSalary"
-        label="基本工资">
+        label="基本工资"
+        width="180">
       </el-table-column>
       <el-table-column
         prop="heatingSubsidy"
-        label="采暖补贴">
+        label="采暖补贴"
+        width="180">
       </el-table-column>
       <el-table-column
         prop="slDay"
@@ -100,78 +101,100 @@
         width="180">
       </el-table-column>
       <el-table-column
-        prop="slDeduction"
+        prop="dailySickLeaveDeduction"
         label="病假扣款"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="plDeduction"
+        prop="dailyPersonalLeaveDeduction"
         label="事假扣款"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="overtimePay"
+        prop="dailyOvertimePay"
         label="加班工资"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="lateDeduction"
+        prop="dailyLateDeduction"
         label="迟到扣款"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="peInsurance"
+        prop="personalEndowmentInsuranceRate"
         label="个人支付养老保险"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="ceInsurance"
+        prop="companyEndowmentInsuranceRate"
         label="公司支付养老保险医疗保险"
         width="200">
       </el-table-column>
       <el-table-column
-        prop="puInsurance"
+        prop="personalUnemploymentInsuranceRate"
         label="个人支付失业保险"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="paFund"
+        prop="personalAccumulationFundRate"
         label="个人支付公积金"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="caFund"
+        prop="companyAccumulationFundRate"
         label="公司支付公积金"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="pmInsurance"
+        prop="personalMedicalInsuranceRate"
         label="个人支付医保"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="cmInsurance"
+        prop="companyMedicalInsuranceRate"
         label="公司支付医保"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="piTax"
+        prop="personalIncomeTaxRate"
         label="个人所得税"
         width="180">
       </el-table-column>
       <el-table-column
         prop="backPay"
-        label="补发">
+        label="补发"
+        width="180">
       </el-table-column>
     </el-table>
+    <!--分页-->
+    <div v-if="total > pageSize" style="float: right;margin-top: 30px;margin-bottom: 20px;margin-right: 60px">
+      <el-pagination
+        background
+        :current-page="pageNo"
+        :page-size="pageSize"
+        @current-change="pageNoChange"
+        layout="prev, pager, next"
+        :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
+import { listFixedSalaryVo, allDept, findEmployeeById, listCalculateVo } from '../../../network/FormManage/SalarySearchForm'
+
 export default {
   name: 'SalarySeachForm',
   data () {
     return {
+      fixedSalaryList: [],
+      calculateVoList: [],
+      allDept: [],
+      employeeId: null,
+      pageNo: 1,
+      pageSize: 10,
+      total: 0,
+      deptId: 0,
       months: [{
         value: '1',
         label: '1月'
@@ -209,113 +232,53 @@ export default {
         value: '12',
         label: '12月'
       }],
-      tableData: [{
-        id: '1',
-        employeeId: '1',
-        employeeName: 'dd',
-        basicSalary: '6000',
-        peInsurance: '600',
-        ceInsurance: '1200',
-        puInsurance: '900',
-        paFund: '1200',
-        caFund: '1200',
-        pmInsurance: '600',
-        cmInsurance: '600',
-        piTax: '900',
-        slDeduction: '300000',
-        slDay: '3',
-        plDeduction: '240000',
-        plDay: '4',
-        lateDeduction: '120000',
-        lateDay: '12',
-        overtimePay: '1200000',
-        overtimeDay: '7',
-        backPay: '0',
-        netPay: '543300',
-        deptName: '技术部',
-        payMonth: '2月',
-        deptId: '1'
-      }, {
-        id: '2',
-        employeeId: '1',
-        employeeName: 'dd',
-        basicSalary: '6000',
-        peInsurance: '600',
-        ceInsurance: '1200',
-        puInsurance: '900',
-        paFund: '1200',
-        caFund: '1200',
-        pmInsurance: '600',
-        cmInsurance: '600',
-        piTax: '900',
-        slDeduction: '300000',
-        slDay: '3',
-        plDeduction: '240000',
-        plDay: '4',
-        lateDeduction: '120000',
-        lateDay: '12',
-        overtimePay: '1200000',
-        overtimeDay: '7',
-        backPay: '0',
-        netPay: '543300',
-        deptName: '技术部',
-        payMonth: '6月',
-        deptId: '1'
-      }, {
-        id: '3',
-        employeeId: '1',
-        employeeName: 'dd',
-        basicSalary: '6000',
-        peInsurance: '600',
-        ceInsurance: '1200',
-        puInsurance: '900',
-        paFund: '1200',
-        caFund: '1200',
-        pmInsurance: '600',
-        cmInsurance: '600',
-        piTax: '900',
-        slDeduction: '300000',
-        slDay: '3',
-        plDeduction: '240000',
-        plDay: '4',
-        lateDeduction: '120000',
-        lateDay: '12',
-        overtimePay: '1200000',
-        overtimeDay: '7',
-        backPay: '0',
-        netPay: '543300',
-        deptName: '技术部',
-        payMonth: '10月',
-        deptId: '1'
-      }, {
-        id: '4',
-        employeeId: '1',
-        employeeName: 'dd',
-        basicSalary: '6000',
-        peInsurance: '600',
-        ceInsurance: '1200',
-        puInsurance: '900',
-        paFund: '1200',
-        caFund: '1200',
-        pmInsurance: '600',
-        cmInsurance: '600',
-        piTax: '900',
-        slDeduction: '300000',
-        slDay: '3',
-        plDeduction: '240000',
-        plDay: '4',
-        lateDeduction: '120000',
-        lateDay: '12',
-        overtimePay: '1200000',
-        overtimeDay: '7',
-        backPay: '0',
-        netPay: '543300',
-        deptName: '技术部',
-        payMonth: '12月',
-        deptId: '1'
-      }],
       value1: '',
       value2: ''
+    }
+  },
+  mounted () {
+    this.getListEmployeeFixedSalaryVo()
+    this.getAllDept()
+    this.getListCalculateVo()
+  },
+  methods: {
+    // 页号改变
+    pageNoChange (pageNo) {
+      this.pageNo = pageNo
+      this.searchInfo()
+    },
+    // 获取全部部门
+    getAllDept () {
+      allDept().then(res => {
+        if (res.code === 2000) {
+          this.allDept = res.data.allDept
+        }
+      })
+    },
+    getListCalculateVo () {
+      listCalculateVo(this.pageNo, this.pageSize, this.deptId, this.employeeName).then(res => {
+        if (res.code === 2000) {
+          this.calculateVoList = res.data.calculateVoList
+          this.total = res.data.total
+        }
+      })
+    },
+    // 获取员工固定工资
+    getListEmployeeFixedSalaryVo () {
+      listFixedSalaryVo(this.pageNo, this.pageSize, this.deptId, this.employeeName).then(res => {
+        if (res.code === 2000) {
+          console.log(res)
+          this.fixedSalaryList = res.data.employeeFixedSalaryVos
+          this.total = res.data.total
+        }
+      })
+    },
+    // 根据员工ID查询员工信息
+    seachEmployeeById () {
+      findEmployeeById()
+    },
+    searchInfo () {
+      this.seachEmployeeById()
     }
   }
 }

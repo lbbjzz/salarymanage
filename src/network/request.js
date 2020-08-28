@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const baseUrl = 'http://localhost:9000'
+export const baseUrl = 'http://106.53.82.206:9000'
 
 export function request (config) {
   const instance = axios.create({
@@ -13,7 +13,7 @@ export function request (config) {
   instance.interceptors.response.use(res => {
     // setTimeout(() => {
     //
-    // }, 2000);
+    // }, 2000)
     return res.data
   }, error => {
     // 登录失效

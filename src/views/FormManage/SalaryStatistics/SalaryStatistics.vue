@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 <template>
   <div>
     <el-select
@@ -12,171 +13,181 @@
       </el-option>
     </el-select>
     <el-date-picker
+      value-format="yyyy-MM"
       v-model="value2"
-      type="year"
-      placeholder="选择查看的年份"
-      style="margin-left: 20px">
+      type="month"
+      placeholder="选择月"
+      style="margin-left: 20px"
+      @change="getMonth">
     </el-date-picker>
-    <el-select
-      v-model="value3"
-      style="margin-left: 20px;"
-      placeholder="请选择查看的月份">
+    <el-select @change="deptChange" style="margin-left: 50px" v-model="deptName" placeholder="请选择查询的部门">
       <el-option
-        v-for="item in months"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
+        key="0"
+        label="全部部门"
+        value="全部部门">
+      </el-option>
+      <el-option
+        v-for="item in allDept"
+        :key="item.id"
+        :label="item.name"
+        :value="item.name">
       </el-option>
     </el-select>
-    <el-button style="float: right;margin-left: 10px" type="primary" icon="el-icon-search" @click="search">搜索
-      </el-button>
-      <el-input
-            placeholder="请输入需要查询的信息"
-            prefix-icon="el-icon-search"
-            v-model="searchContent"
-            style="width: 20%;float: right">
-      </el-input>
-      <div></div>
-      <el-table
-        :data="deptData"
-        stripe
-        style="width: 100%;margin-top: 20px"
-        v-if="value1 === '1'">
-        <el-table-column
-          prop="deptID"
-          label="部门编号"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="deptName"
-          label="部门名"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="yandm"
-          label="年度/月度"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="totalSalary"
-          label="总基本工资"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="averageSalary"
-          label="平均基本工资"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="minimumSalary"
-          label="最低基本工资"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="highestSalary"
-          label="最高基本工资"
-          width="180">
-        </el-table-column>
-      </el-table>
-      <el-table
-        :data="companyData"
-        stripe
-        style="width: 100%;margin-top: 20px"
-        v-if="value1 === '2'">
-        <el-table-column
-          prop="yandm"
-          label="年度/月度"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="totalSalary"
-          label="总工资"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="averageSalary"
-          label="平均工资"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="minimumSalary"
-          label="最低工资"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="highestSalary"
-          label="最高工资"
-          width="180">
-        </el-table-column>
-      </el-table>
-      <el-table
-        :data="employeeData"
-        stripe
-        style="width: 100%;margin-top: 20px"
-        v-if="value1 === '3'">
-        <el-table-column
-          prop="employeeId"
-          label="员工编号"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="employeeName"
-          label="员工姓名">
-        </el-table-column>
-        <el-table-column
-          prop="basicSalary"
-          label="总基本工资"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="slDeduction"
-          label="总病假扣款"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="plDeduction"
-          label="总事假扣款"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="overtimePay"
-          label="总加班工资"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="lateDeduction"
-          label="总迟到扣款"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="endowmentInsurance"
-          label="总养老保险"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="medicalInsurance"
-          label="总医疗保险"
-          width="200">
-        </el-table-column>
-        <el-table-column
-          prop="accumulationInsurance"
-          label="总公积金"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="piTax"
-          label="个人所得税"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="backPay"
-          label="补发">
-        </el-table-column>
-      </el-table>
+    <div></div>
+    <el-table
+      :data="deptData"
+      stripe
+      style="width: 100%;margin-top: 20px"
+      v-show="value1 === '1'">
+      <el-table-column
+        prop="deptId"
+        label="部门编号"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="deptName"
+        label="部门名"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="queryDate"
+        label="年度/月度"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="sumSalary"
+        label="总基本工资"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="avgSalary"
+        label="平均基本工资"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="minSalary"
+        label="最低基本工资"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="maxSalary"
+        label="最高基本工资"
+        width="180">
+      </el-table-column>
+    </el-table>
+    <el-table
+      :data="companyData"
+      stripe
+      style="width: 100%;margin-top: 20px"
+      v-show="value1 === '2'">
+      <el-table-column
+        prop="queryDate"
+        label="年度/月度"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="sumSalary"
+        label="总工资"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="avgSalary"
+        label="平均工资"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="minSalary"
+        label="最低工资"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="maxSalary"
+        label="最高工资"
+        width="180">
+      </el-table-column>
+    </el-table>
+    <el-table
+      :data="employeeData"
+      stripe
+      style="width: 100%;margin-top: 20px"
+      v-show="value1 === '3'">
+      <el-table-column
+        prop="employeeId"
+        label="员工编号"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="employeeName"
+        label="员工姓名">
+      </el-table-column>
+      <el-table-column
+        prop="basicSalary"
+        label="总基本工资"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="sickLeaveDeduction"
+        label="总病假扣款"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="personalLeaveDeduction"
+        label="总事假扣款"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="overtimePay"
+        label="总加班工资"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="lateDeduction"
+        label="总迟到扣款"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="endowmentInsurance"
+        label="总养老保险"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="medicalInsurance"
+        label="总医疗保险"
+        width="200">
+      </el-table-column>
+      <el-table-column
+        prop="accumulationInsurance"
+        label="总公积金"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="personalIncomeTaxRate"
+        label="个人所得税"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="backPay"
+        label="补发">
+      </el-table-column>
+    </el-table>
+    <!--分页-->
+    <div v-if="total > pageSize" style="float: right;margin-top: 30px;margin-bottom: 20px;margin-right: 60px">
+      <el-pagination
+        background
+        :current-page="pageNo"
+        :page-size="pageSize"
+        @current-change="pageNoChange"
+        layout="prev, pager, next"
+        :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
+import { getMonthlySalaryStat, getMonthlySalaryStatByDeptId } from '../../../network/FormManage/SalaryStatistics'
+import { allDept } from '../../../network/salaryManage/fixedSalaryManage'
+
 export default {
   name: 'SalaryStatistics',
   data () {
@@ -191,46 +202,86 @@ export default {
         value: '3',
         label: '员工'
       }],
-      months: [{
-        value: '1',
-        label: '1月'
-      }, {
-        value: '2',
-        label: '2月'
-      }, {
-        value: '3',
-        label: '3月'
-      }, {
-        value: '4',
-        label: '4月'
-      }, {
-        value: '5',
-        label: '5月'
-      }, {
-        value: '6',
-        label: '6月'
-      }, {
-        value: '7',
-        label: '7月'
-      }, {
-        value: '8',
-        label: '8月'
-      }, {
-        value: '9',
-        label: '9月'
-      }, {
-        value: '10',
-        label: '10月'
-      }, {
-        value: '11',
-        label: '11月'
-      }, {
-        value: '12',
-        label: '12月'
-      }],
-      value1: [],
-      value2: [],
-      value3: []
+      value1: '',
+      value2: '',
+      deptData: [],
+      companyData: [],
+      employeeData: [],
+      pageNo: 1,
+      pageSize: 10,
+      total: 0,
+      time: '',
+      allDept: [],
+      deptName: '全部部门',
+      deptId: 0,
+      value: '1',
+      c: null
+    }
+  },
+  mounted () {
+    // this.getYearlySalar()
+    this.getMonthlySalary()
+    this.getAllDept()
+    this.getMonthlySalaryStatByDeptId()
+  },
+  methods: {
+    // 页号改变
+    pageNoChange (pageNo) {
+      this.pageNo = pageNo
+      this.searchInfo()
+    },
+    // 获取全部部门
+    getAllDept () {
+      allDept().then(res => {
+        if (res.code === 2000) {
+          this.allDept = res.data.allDept
+        }
+      })
+    },
+    // 获取月度部门工资
+    getMonthlySalary (month) {
+      console.log(month, 'month')
+      getMonthlySalaryStat(month).then(res => {
+        if (res.code === 2000) {
+          console.log(res)
+          this.deptData = res.data.listSalaryStat
+        }
+      })
+    },
+    getMonthlySalaryStatByDeptId(deptId, month) {
+      console.log(deptId, month)
+      getMonthlySalaryStatByDeptId(this.deptId, month).then(res => {
+        if (res.code === 2000) {
+          console.log(res)
+          this.deptData = []
+          this.deptData[0] = res.data.salaryStat
+        }
+      })
+    },
+    getMonth(time) {
+      this.getMonthlySalary(time)
+      this.time = time
+    },
+    // 查询部门的改变
+    deptChange (value) {
+      if (value === '全部部门') {
+        this.deptId = 0
+      } else {
+        const dept = this.allDept.find(item => {
+          return item.name === value
+        })
+        this.deptId = dept.id
+      }
+      this.searchInfo()
+    },
+    searchByDeptId() {
+      this.searchInfo()
+    },
+    searchInfo (deptId, time) {
+      deptId = this.deptId
+      time = this.time
+      console.log(deptId, time)
+      this.getMonthlySalaryStatByDeptId(deptId, time)
     }
   }
 }
