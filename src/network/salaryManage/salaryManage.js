@@ -40,3 +40,11 @@ export function listFixedSalaryVo (pageNo, pageSize, deptId, employeeName) {
     method: 'get'
   })
 }
+
+// 获取员工导入项目
+export function listImport (pageNo, pageSize, deptId, employeeName) {
+  return request({
+    url: '/import/listImport/' + pageNo + '/' + pageSize + '/' + deptId + '/' + employeeName,
+    method: 'get'
+  })
+}

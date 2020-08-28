@@ -35,11 +35,8 @@ export function updateImport (id, sickLeaveDay, personalLeaveDay, lateDay, overt
 // 删除员工考勤信息
 export function deleteImport (importId) {
   return request({
-    url: '/import/deleteImport',
-    method: 'post',
-    params: {
-      importId
-    }
+    url: '/import/clearImportData/' + importId,
+    method: 'get'
   })
 }
 

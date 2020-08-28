@@ -98,7 +98,7 @@
                 @onConfirm="deleted(scope.row)"
                 title="是否刪除该员工考勤数据？"
               >
-                <el-button slot="reference" type="text" size="small" style="color: red">删除</el-button>
+                <el-button slot="reference" type="text" size="small" style="color: red">清空</el-button>
               </el-popconfirm>
             </template>
           </el-table-column>

@@ -32,6 +32,7 @@
             style="width: 20%;float: right"
             v-model="employeeName">
     </el-input>
+    <!--固定项目-->
     <div style="margin-top: 30px" v-show="value === '1'">
       <el-table
         tooltip-effect="dark"
@@ -73,6 +74,7 @@
         </el-table-column>
       </el-table>
     </div>
+    <!--固定项目-->
     <!--计算项目表格-->
     <div v-show="value === '2'">
       <el-button style="margin-top: 20px;margin-bottom: 10px" type="primary" round @click="editSelectCalculate">批量编辑</el-button>
@@ -181,6 +183,72 @@
           </template>
         </el-table-column>
       </el-table>
+    </div>
+    <!--导入项目-->
+    <div STYLE="margin-top: 30px" v-show="value === '3'">
+      <el-table
+        :data="importVoList"
+        stripe
+        style="width: 100%">
+        <el-table-column
+          prop="id"
+          label="Id"
+          width="50">
+        </el-table-column>
+        <el-table-column
+          prop="employeeName"
+          label="员工姓名">
+        </el-table-column>
+        <el-table-column
+          prop="employeeDept"
+          label="员工部门">
+        </el-table-column>
+        <el-table-column
+          prop="employeeJob"
+          label="员工岗位">
+        </el-table-column>
+        <el-table-column
+          prop="sickLeaveDay"
+          label="病假天数">
+        </el-table-column>
+        <el-table-column
+          prop="personalLeaveDay"
+          label="事假天数">
+        </el-table-column>
+        <el-table-column
+          prop="lateDay"
+          label="迟到次数">
+        </el-table-column>
+        <el-table-column
+          prop="overtimeDay"
+          label="加班天数">
+        </el-table-column>
+        <el-table-column
+          prop="backPay"
+          label="补发工资">
+        </el-table-column>s
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          width="200">
+        </el-table-column>
+        <el-table-column
+          label="操作">
+          <template slot-scope="scope">
+            <el-button @click="editImport(scope.row)" type="text" size="small">编辑</el-button>
+            <el-divider direction="vertical"></el-divider>
+            <el-popconfirm
+              icon="el-icon-info"
+              iconColor="red"
+              @onConfirm="deleted(scope.row)"
+              title="是否刪除该员工考勤数据？"
+            >
+              <el-button slot="reference" type="text" size="small" style="color: red">清空</el-button>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!--导入项目-->
     </div>
 <!--    <el-table-->
 <!--      :data="calculateVoList"-->
@@ -401,13 +469,46 @@
         <el-button type="primary" @click="updateSelectCalculate">确 定</el-button>
       </span>
     </el-dialog>
+    <!--编辑导入项目的表单-->
+    <el-dialog title="编辑员工考勤数据" :visible.sync="importVisible">
+      <el-form :model="importData">
+        <el-form-item label="员工姓名：">
+          <el-input :readOnly="true" v-model="importData.employeeName"></el-input>
+        </el-form-item>
+        <el-form-item label="部门：">
+          <el-input :readOnly="true" v-model="importData.employeeDept"></el-input>
+        </el-form-item>
+        <el-form-item label="岗位：">
+          <el-input :readOnly="true" v-model="importData.employeeJob"></el-input>
+        </el-form-item>
+        <el-form-item label="病假天数：">
+          <el-input-number :step=1 :step-strictly="true" v-model="importData.sickLeaveDay" :min="0" :max="31"></el-input-number>
+        </el-form-item>
+        <el-form-item label="事假天数：">
+          <el-input-number :step=1 :step-strictly="true" v-model="importData.personalLeaveDay" :min="0" :max="31"></el-input-number>
+        </el-form-item>
+        <el-form-item label="迟到天数：">
+          <el-input-number :step=1 :step-strictly="true" v-model="importData.lateDay" :min="0" :max="31"></el-input-number>
+        </el-form-item>
+        <el-form-item label="加班天数：">
+          <el-input-number :step="1" :step-strictly="true" v-model="importData.overtimeDay" :min="0" :max="31"></el-input-number>
+        </el-form-item>
+        <el-form-item label="补发工资：">
+          <el-input onkeyup='this.value=this.value.replace(/\D/gi,"")' v-model="importData.backPay"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="importVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateImportData">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listCalculateVo, updateCalculate, listFixedSalaryVo } from '../../../network/salaryManage/salaryManage'
+import { listCalculateVo, updateCalculate, listFixedSalaryVo, listImport } from '../../../network/salaryManage/salaryManage'
 import { allDept } from '../../../network/salaryManage/fixedSalaryManage'
-
+import { deleteImport, updateImport } from '../../../network/salaryManage/importData'
 export default {
   name: 'SalaryManage',
   data () {
@@ -423,9 +524,12 @@ export default {
       // 选中的员工计算项目
       selectEditCalculateVo: [],
       editSelectCalculateVisible: false,
-
       // 固定项目
       fixedSalaryList: [],
+      // 导入项目
+      importVoList: [],
+      importData: {},
+      importVisible: false,
       // 全部部门
       allDept: [],
       deptName: '全部部门',
@@ -460,6 +564,7 @@ export default {
         }
       })
     },
+    // 获取计算项目数据
     getListCalculateVo () {
       listCalculateVo(this.pageNo, this.pageSize, this.deptId, this.employeeName).then(res => {
         if (res.code === 2000) {
@@ -474,6 +579,15 @@ export default {
         if (res.code === 2000) {
           console.log(res)
           this.fixedSalaryList = res.data.employeeFixedSalaryVos
+          this.total = res.data.total
+        }
+      })
+    },
+    // 获取导入项目数据
+    getListImportVo () {
+      listImport(this.pageNo, this.pageSize, this.deptId, this.employeeName).then(res => {
+        if (res.code === 2000) {
+          this.importVoList = res.data.listImportVo
           this.total = res.data.total
         }
       })
@@ -577,7 +691,51 @@ export default {
         this.getListEmployeeFixedSalaryVo()
       } else if (this.value === '2') {
         this.getListCalculateVo()
+      } else if (this.value === '3') {
+        this.getListImportVo()
       }
+    },
+    // 编辑导入数据的表单打开
+    editImport (row) {
+      this.importData = row
+      this.importVisible = true
+    },
+    // 更新员工导入的数据
+    updateImportData () {
+      updateImport(this.importData.id, this.importData.sickLeaveDay,
+        this.importData.personalLeaveDay, this.importData.lateDay,
+        this.importData.overtimeDay, this.importData.backPay).then(res => {
+        this.importVisible = false
+        if (res.code === 2000) {
+          this.$message({
+            message: '修改成功！',
+            type: 'success'
+          })
+          this.getListImportVo()
+          return
+        }
+        this.$message({
+          message: '修改失败！',
+          type: 'error'
+        })
+      })
+    },
+    // 删除员工导入考勤数据
+    deleted (row) {
+      deleteImport(row.id).then(res => {
+        if (res.code === 2000) {
+          this.$message({
+            message: '删除成功！',
+            type: 'success'
+          })
+          this.getListImportVo()
+          return
+        }
+        this.$message({
+          message: '删除失败！',
+          type: 'error'
+        })
+      })
     }
   }
 }
