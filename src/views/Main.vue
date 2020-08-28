@@ -28,9 +28,6 @@ export default {
 
 <style lang="scss" scoped>
     .el-header {
-        background-color: #B0C4DE;
-    }
-
-    .el-main {
+        background-color: #d9e7ed;
     }
 </style>

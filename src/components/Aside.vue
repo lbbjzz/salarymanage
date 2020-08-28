@@ -1,11 +1,12 @@
 <template>
+  <div>
   <el-menu
     :collapse="isCollapse"
     :default-active="$route.path"
     class="el-menu-vertical-demo"
-    background-color="#545c64"
-    text-color="#fff"
-    active-text-color="#ffd04b"
+    background-color="#e9f1f5"
+    text-color="#404040"
+    active-text-color="#FFCC33"
     style="height: 100vh;">
     <el-menu-item :index="item.path" v-for="item in noChildren" :key="item.path" @click="clickMenu(item)">
       <i :class="'el-icon-' + item.icon"></i>
@@ -25,6 +26,7 @@
       </el-menu-item-group>
     </el-submenu>
   </el-menu>
+  </div>
 </template>
 
 <script>
@@ -53,7 +55,7 @@ export default {
       menu: [
         {
           path: '/home',
-          name: 'home',
+          name: 'Home',
           label: '首页',
           icon: 's-home',
           url: 'Home/Home'

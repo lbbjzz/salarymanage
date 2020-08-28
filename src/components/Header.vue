@@ -10,6 +10,11 @@
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
+    <div class="logo">
+    <el-container>
+      <img :src="logo" style="width: 200px; height: 40px">
+    </el-container>
+    </div>
     <div class="r-content">
       <el-dropdown trigger="click" size="mini">
         <span class="el-dropdown-link"><img :src="userImg" class="user"/></span>
@@ -33,6 +38,7 @@ export default {
   },
   data () {
     return {
+      logo: require('../assets/images/logo.png'),
       userImg: require('../assets/images/user.png')
     }
   },
@@ -63,6 +69,12 @@ export default {
     .el-button {
       margin-right: 20px;
     }
+  }
+
+  .logo {
+    display: flex;
+    // align-items: center;
+    //float: left;
   }
 
   .r-content {
