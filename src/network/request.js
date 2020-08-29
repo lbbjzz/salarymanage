@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '../store'
 import router from '../router'
-export const baseUrl = 'http://localhost:9000'
+export const baseUrl = 'http://106.53.82.206:9000'
 
 export function request (config) {
   const instance = axios.create({

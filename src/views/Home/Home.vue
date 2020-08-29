@@ -3,10 +3,9 @@
         <el-col :span="8">
             <el-card shadow="hover" style="background-color:#FFFFF0;">
                 <div class="user">
-                    <img :src="userImg"/>
+                    <img :src="userImg" alt=""/>
                     <div class="userinfo">
-                        <p class="name">图书借阅管理系统</p>
-                        <p class="access">JavaEE实训项目</p>
+                        <p class="name">企业薪资管理系统</p>
                     </div>
                 </div>
             </el-card>
@@ -36,7 +35,7 @@
                 <el-card shadow="hover" v-for="item in countData" :key="item.value"
                          :body-style="{ display: 'flex', padding: 0 }"
                          style="background-color:#FFFAFA">
-                    <img class="icon" :src="item.icon"/>
+                    <img class="icon" :src="item.icon" alt=""/>
                     <div class="detail">
                         <p class="txt">{{ item.value }}</p>
                     </div>
