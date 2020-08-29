@@ -62,7 +62,7 @@ export default {
       userImg: require('../../assets/images/user.png'),
       countData: [
         {
-          value: '前端开发：刘栋',
+          value: '组长：丁晨明',
           icon: require('../../assets/images/vue.png')
         },
         {
@@ -70,7 +70,19 @@ export default {
           icon: require('../../assets/images/spring.png')
         },
         {
-          value: '后端开发：余婉瑶',
+          value: '前端开发：余婉瑶',
+          icon: require('../../assets/images/spring.png')
+        },
+        {
+          value: '前端开发：刘栋',
+          icon: require('../../assets/images/vue.png')
+        },
+        {
+          value: '后端开发：刘嘉伟',
+          icon: require('../../assets/images/spring.png')
+        },
+        {
+          value: '后端开发：张微如',
           icon: require('../../assets/images/spring.png')
         }
       ],

@@ -1,33 +1,34 @@
 <template>
-  <div >
-    <el-select v-model="value1" placeholder="请选择发放的部门">
+  <div>
+    <el-select @change="deptNameChange" v-model="deptName" placeholder="请选择发放的部门">
       <el-option
-        v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
+        key="0"
+        label="全部部门"
+        value="全部部门">
+      </el-option>
+      <el-option
+        v-for="item in allDept"
+        :key="item.id"
+        :label="item.name"
+        :value="item.name">
       </el-option>
     </el-select>
-    <el-select
-      v-model="value2"
-      style="margin-left: 20px;"
-      placeholder="请选择发放月">
-      <el-option
-        v-for="item in months"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-      </el-option>
-    </el-select>
-    <div></div>
-    <el-button @click="print(scope.row)"  v-if="check" style="margin-top: 20px;">打印</el-button>
+    <el-date-picker
+      value-format="yyyy-MM"
+      style="margin-left: 30px"
+      v-model="yearsMonth"
+      @change="timeChange"
+      type="month"
+      placeholder="选择月">
+    </el-date-picker>
     <el-table
-      :data="tableData"
+      :data="printItem"
       stripe
       style="width: 100%;margin-top: 20px"
-      @select="handleSelect"
       ref="multipleTable">
-      <el-table-column type="selection" label="全选" v-model="checkAll">
+      <el-table-column
+        prop="id"
+        label="ID">
       </el-table-column>
       <el-table-column
         prop="employeeId"
@@ -44,9 +45,10 @@
         width="100">
       </el-table-column>
       <el-table-column
-        prop="payMonth"
+        prop="createTime"
         label="发放月"
-        width="100">
+        :formatter="dateFormat"
+        width="150">
       </el-table-column>
       <el-table-column
         prop="netPay"
@@ -61,12 +63,12 @@
         label="采暖补贴">
       </el-table-column>
       <el-table-column
-        prop="slDay"
+        prop="sickLeaveDay"
         label="病假天数"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="plDay"
+        prop="personalLeaveDay"
         label="事假天数"
         width="180">
       </el-table-column>
@@ -81,12 +83,12 @@
         width="180">
       </el-table-column>
       <el-table-column
-        prop="slDeduction"
+        prop="sickLeaveDeduction"
         label="病假扣款"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="plDeduction"
+        prop="personalLeaveDeduction"
         label="事假扣款"
         width="180">
       </el-table-column>
@@ -101,42 +103,42 @@
         width="180">
       </el-table-column>
       <el-table-column
-        prop="peInsurance"
+        prop="personalEndowmentInsurance"
         label="个人支付养老保险"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="ceInsurance"
+        prop="companyEndowmentInsurance"
         label="公司支付养老保险医疗保险"
         width="200">
       </el-table-column>
       <el-table-column
-        prop="puInsurance"
+        prop="personalUnemploymentInsurance"
         label="个人支付失业保险"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="paFund"
+        prop="personalAccumulationFund"
         label="个人支付公积金"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="caFund"
+        prop="companyAccumulationFund"
         label="公司支付公积金"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="pmInsurance"
+        prop="personalMedicalInsurance"
         label="个人支付医保"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="cmInsurance"
+        prop="companyMedicalInsurance"
         label="公司支付医保"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="piTax"
+        prop="personalIncomeTax"
         label="个人所得税"
         width="180">
       </el-table-column>
@@ -145,14 +147,31 @@
         label="补发">
       </el-table-column>
     </el-table>
+    <el-pagination
+      style="padding-top: 20px"
+      class="pager"
+      background layout="prev, pager, next"
+      :current-page="pageNo"
+      :page-size="pageSize"
+      :total="total"
+      @current-change="pageNoChange"
+      hide-on-single-page>
+    </el-pagination>
   </div>
 </template>
 
 <script>
+import { AllPrintItem } from '@/network/FormManage/SalaryPrint'
+import moment from 'moment'
+import { allDept } from '@/network/salaryManage/fixedSalaryManage'
+
 export default {
   name: 'SalarySettlement',
-  data () {
+  data() {
     return {
+      total: null,
+      pageNo: 1,
+      pageSize: 8,
       options: [{
         value: '1',
         label: '技术部'
@@ -160,168 +179,88 @@ export default {
         value: '2',
         label: '产品部'
       }],
-      months: [{
-        value: '1',
-        label: '1月'
-      }, {
-        value: '2',
-        label: '2月'
-      }, {
-        value: '3',
-        label: '3月'
-      }, {
-        value: '4',
-        label: '4月'
-      }, {
-        value: '5',
-        label: '5月'
-      }, {
-        value: '6',
-        label: '6月'
-      }, {
-        value: '7',
-        label: '7月'
-      }, {
-        value: '8',
-        label: '8月'
-      }, {
-        value: '9',
-        label: '9月'
-      }, {
-        value: '10',
-        label: '10月'
-      }, {
-        value: '11',
-        label: '11月'
-      }, {
-        value: '12',
-        label: '12月'
-      }],
-      tableData: [{
-        id: '1',
-        employeeId: '1',
-        employeeName: 'dd',
-        basicSalary: '6000',
-        peInsurance: '600',
-        ceInsurance: '1200',
-        puInsurance: '900',
-        paFund: '1200',
-        caFund: '1200',
-        pmInsurance: '600',
-        cmInsurance: '600',
-        piTax: '900',
-        slDeduction: '300000',
-        slDay: '3',
-        plDeduction: '240000',
-        plDay: '4',
-        lateDeduction: '120000',
-        lateDay: '12',
-        overtimePay: '1200000',
-        overtimeDay: '7',
-        backPay: '0',
-        netPay: '543300',
-        deptName: '技术部',
-        payMonth: '2月',
-        deptId: '1'
-      }, {
-        id: '2',
-        employeeId: '1',
-        employeeName: 'dd',
-        basicSalary: '6000',
-        peInsurance: '600',
-        ceInsurance: '1200',
-        puInsurance: '900',
-        paFund: '1200',
-        caFund: '1200',
-        pmInsurance: '600',
-        cmInsurance: '600',
-        piTax: '900',
-        slDeduction: '300000',
-        slDay: '3',
-        plDeduction: '240000',
-        plDay: '4',
-        lateDeduction: '120000',
-        lateDay: '12',
-        overtimePay: '1200000',
-        overtimeDay: '7',
-        backPay: '0',
-        netPay: '543300',
-        deptName: '技术部',
-        payMonth: '6月',
-        deptId: '1'
-      }, {
-        id: '3',
-        employeeId: '1',
-        employeeName: 'dd',
-        basicSalary: '6000',
-        peInsurance: '600',
-        ceInsurance: '1200',
-        puInsurance: '900',
-        paFund: '1200',
-        caFund: '1200',
-        pmInsurance: '600',
-        cmInsurance: '600',
-        piTax: '900',
-        slDeduction: '300000',
-        slDay: '3',
-        plDeduction: '240000',
-        plDay: '4',
-        lateDeduction: '120000',
-        lateDay: '12',
-        overtimePay: '1200000',
-        overtimeDay: '7',
-        backPay: '0',
-        netPay: '543300',
-        deptName: '技术部',
-        payMonth: '10月',
-        deptId: '1'
-      }, {
-        id: '4',
-        employeeId: '1',
-        employeeName: 'dd',
-        basicSalary: '6000',
-        peInsurance: '600',
-        ceInsurance: '1200',
-        puInsurance: '900',
-        paFund: '1200',
-        caFund: '1200',
-        pmInsurance: '600',
-        cmInsurance: '600',
-        piTax: '900',
-        slDeduction: '300000',
-        slDay: '3',
-        plDeduction: '240000',
-        plDay: '4',
-        lateDeduction: '120000',
-        lateDay: '12',
-        overtimePay: '1200000',
-        overtimeDay: '7',
-        backPay: '0',
-        netPay: '543300',
-        deptName: '技术部',
-        payMonth: '12月',
-        deptId: '1'
-      }],
-      value1: [],
-      value2: [],
-      check: false
+      printItem: [],
+      deptName: '全部部门',
+      allDept: [],
+      yearsMonth: '',
+      time: '0',
+      deptId: 0
     }
   },
+  created() {
+    this.getPrintItem()
+    this.getAllDept()
+  },
   methods: {
-    handleSelect(val, row) {
-      if (val.length > 0) {
-        this.$refs.multipleTable.toggleRowSelection(row) //  选中当前选择
-        val.shift()
-        this.$refs.multipleTable.toggleRowSelection(row) //  选中当前选择
-        this.check = true
+    // 格式化时间
+    dateFormat(row, column) {
+      const date = row[column.property]
+      return moment(date).format('YYYY 年 MMMM')
+    },
+    // 获取所有部门
+    getAllDept () {
+      allDept().then(res => {
+        if (res.code === 2000) {
+          this.allDept = res.data.allDept
+        }
+      })
+    },
+    // 获取打印信息
+    getPrintItem() {
+      AllPrintItem(this.deptId, this.pageNo, this.pageSize, this.time).then(res => {
+        console.log(res.data.salaryVoList, 'all')
+        this.printItem = res.data.salaryVoList
+        this.total = res.data.total
+      })
+    },
+    // 分页
+    pageNoChange(pageNo) {
+      this.pageNo = pageNo
+      this.getPrintItem()
+    },
+    // 选择部门变化
+    deptNameChange(value) {
+      if (value === '全部部门') {
+        this.deptId = 0
       } else {
-        this.check = false
+        const dept = this.allDept.find(item => {
+          return item.name === value
+        })
+        this.deptId = dept.id
+      }
+      if (this.time === '0' || this.deptId === 0) {
+        this.getPrintItem()
+      }
+    },
+    // 选择月份变化
+    timeChange (value) {
+      if (value === null || value === undefined) {
+        this.time = '0'
+      } else {
+        this.time = value
+      }
+      // 2020-08
+      const times = value.split('-')
+      console.log(times)
+      const now = new Date()
+      const year = now.getFullYear()
+      const month = now.getMonth() + 1
+      if (Number(times[0]) > Number(year) || Number(times[1]) > Number(month)) {
+        this.yearsMonth = ''
+        this.$message.error('时间选择有误！')
+        return
+      }
+      if (this.time === '0' || this.deptId === 0) {
+        this.getPrintItem()
       }
     }
   }
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.pager {
+  position: absolute;
+  right: 20px;
+}
 </style>
