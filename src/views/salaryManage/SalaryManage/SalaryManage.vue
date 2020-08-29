@@ -250,102 +250,40 @@
       </el-table>
       <!--导入项目-->
     </div>
-<!--    <el-table-->
-<!--      :data="calculateVoList"-->
-<!--      stripe-->
-<!--      border-->
-<!--      style="width: 100%;margin-top: 20px">-->
-<!--      <el-table-column-->
-<!--        prop="id"-->
-<!--        label="ID"-->
-<!--        width="100">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="employeeName"-->
-<!--        label="员工名"-->
-<!--        width="100">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="deptName"-->
-<!--        label="部门名">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="jobName"-->
-<!--        label="岗位名">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="sickLeaveDay"-->
-<!--        label="病假天数 (天)"-->
-<!--        width="180">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="personalLeaveDay"-->
-<!--        label="事假天数（天）"-->
-<!--        width="180">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="lateDay"-->
-<!--        label="迟到天数（天）"-->
-<!--        width="180">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="overtimeDay"-->
-<!--        label="加班天数（天）"-->
-<!--        width="180">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="backPay"-->
-<!--        label="补发工资（元）"-->
-<!--        width="180">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--            fixed="right"-->
-<!--            label="操作"-->
-<!--            width="100">-->
-<!--        <template slot-scope="scope">-->
-<!--            <el-button size="mini" @click="handleApply(scope.$index, scope.row)">编辑</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--    </el-table>-->
-<!--    <el-table-->
-<!--      :data="calculateVoList"-->
-<!--      stripe-->
-<!--      border-->
-<!--      style="width: 100%;margin-top: 20px"-->
-<!--      v-if="value === '4'">-->
-<!--      <el-table-column-->
-<!--        prop="id"-->
-<!--        label="ID"-->
-<!--        width="100">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="employeeName"-->
-<!--        label="员工名"-->
-<!--        width="100">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="deptName"-->
-<!--        label="部门名"-->
-<!--        width="150">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="jobName"-->
-<!--        label="岗位名"-->
-<!--        width="150">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--        prop="netPay"-->
-<!--        label="实发工资 (元)">-->
-<!--      </el-table-column>-->
-<!--      <el-table-column-->
-<!--            fixed="right"-->
-<!--            label="操作"-->
-<!--            width="100">-->
-<!--        <template slot-scope="scope">-->
-<!--            <el-button size="mini" @click="handleApply(scope.$index, scope.row)">编辑</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--    </el-table>-->
+    <div style="margin-top: 30px" v-show="value === '4'">
+      <el-table
+        tooltip-effect="dark"
+        :data="netPayVoList"
+        stripe
+        style="width: 100%">
+        <el-table-column
+          prop="id"
+          label="编号"
+          width="90">
+        </el-table-column>
+        <el-table-column
+          prop="employeeName"
+          label="员工姓名">
+        </el-table-column>
+        <el-table-column
+          prop="deptName"
+          label="员工部门">
+        </el-table-column>
+        <el-table-column
+          prop="jobName"
+          label="员工岗位">
+        </el-table-column>
+        <el-table-column
+          prop="netPay"
+          label="实发工资">
+        </el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="发放时间"
+          :formatter="dateFormat">
+        </el-table-column>
+      </el-table>
+    </div>
     <!--分页-->
     <div v-if="total > pageSize" style="float: right;margin-top: 30px;margin-bottom: 20px;margin-right: 60px">
       <el-pagination
@@ -506,9 +444,10 @@
 </template>
 
 <script>
-import { listCalculateVo, updateCalculate, listFixedSalaryVo, listImport } from '../../../network/salaryManage/salaryManage'
+import { listCalculateVo, updateCalculate, listFixedSalaryVo, listImport, listNetPayVo } from '../../../network/salaryManage/salaryManage'
 import { allDept } from '../../../network/salaryManage/fixedSalaryManage'
 import { deleteImport, updateImport } from '../../../network/salaryManage/importData'
+import moment from 'moment'
 export default {
   name: 'SalaryManage',
   data () {
@@ -530,6 +469,8 @@ export default {
       importVoList: [],
       importData: {},
       importVisible: false,
+      // 实发工资
+      netPayVoList: [],
       // 全部部门
       allDept: [],
       deptName: '全部部门',
@@ -588,6 +529,15 @@ export default {
       listImport(this.pageNo, this.pageSize, this.deptId, this.employeeName).then(res => {
         if (res.code === 2000) {
           this.importVoList = res.data.listImportVo
+          this.total = res.data.total
+        }
+      })
+    },
+    // 获取实发工资项目
+    getListNetPayVo () {
+      listNetPayVo(this.pageNo, this.pageSize, this.deptId, this.employeeName).then(res => {
+        if (res.code === 2000) {
+          this.netPayVoList = res.data.netPayVoList
           this.total = res.data.total
         }
       })
@@ -693,6 +643,8 @@ export default {
         this.getListCalculateVo()
       } else if (this.value === '3') {
         this.getListImportVo()
+      } else if (this.value === '4') {
+        this.getListNetPayVo()
       }
     },
     // 编辑导入数据的表单打开
@@ -736,6 +688,11 @@ export default {
           type: 'error'
         })
       })
+    },
+    // 格式化时间
+    dateFormat (row, column) {
+      const date = row[column.property]
+      return moment(date).format('YYYY 年 MMMM')
     }
   }
 }
