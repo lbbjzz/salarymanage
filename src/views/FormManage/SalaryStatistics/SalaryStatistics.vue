@@ -296,7 +296,7 @@ export default {
         series: [{
           name: '工资统计',
           type: 'bar',
-          data: [avgSalary, avgSalary, minSalary, maxSalary]
+          data: [sumSalary, avgSalary, minSalary, maxSalary]
         }],
         color: ['#5aacd1']
       })
