@@ -12,3 +12,14 @@ export function AllPrintItem(deptId, pageNo, pageSize, time) {
     }
   })
 }
+
+export function allSalaryVO(deptId, time) {
+  return request({
+    url: '/salary/allSalaryVO',
+    method: 'get',
+    params: {
+      deptId,
+      time
+    }
+  })
+}

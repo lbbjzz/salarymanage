@@ -21,6 +21,8 @@
       type="month"
       placeholder="选择月">
     </el-date-picker>
+
+    <el-button style="margin-left: 20px" type="primary" @click="exportExcel" plain>导出Excel</el-button>
     <el-table
       :data="printItem"
       stripe
@@ -161,9 +163,10 @@
 </template>
 
 <script>
-import { AllPrintItem } from '@/network/FormManage/SalaryPrint'
+import { AllPrintItem , allSalaryVO } from '@/network/FormManage/SalaryPrint'
 import moment from 'moment'
 import { allDept } from '@/network/salaryManage/fixedSalaryManage'
+import XLSX from 'xlsx'
 
 export default {
   name: 'SalarySettlement',
@@ -191,7 +194,84 @@ export default {
     this.getPrintItem()
     this.getAllDept()
   },
+  mounted () {
+  },
   methods: {
+    exportExcel () {
+      const time = this.yearsMonth === '' ? '全部时间' : this.yearsMonth
+      this.$confirm('此操作导出' + this.deptName + time + '的考勤数据？', '导出Excel', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 获取全部的工资数据
+        allSalaryVO(this.deptId, this.time).then(res => {
+          console.log(res)
+          if (res.code === 2000) {
+            alert('测试')
+            if (res.data.salaryVoList.length === 0) {
+              this.$message({
+                type: 'error',
+                message: '没有任何数据！！'
+              })
+              return
+            }
+            const data = res.data.salaryVoList
+            console.log(data)
+            this.export(data, time)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    export (data, time) {
+      const tableData = [
+        ['ID', '员工编号', '员工姓名', '员工部门', '发放月', '实发工资',
+          '基本工资', '采暖补贴', '病假天数', '事假天数', '加班天数',
+          '迟到天数', '个人支付养老保险', '公司支付养老保险医疗保险',
+          '个人支付失业保险', '个人支付公积金', '公司支付公积金', '个人支付医保',
+          '公司支付医保', '个人所得税', '补发']
+      ] // 表格表头
+      data.forEach(item => {
+        let rowData = []
+        rowData = [
+          item.id,
+          item.employeeId,
+          item.employeeName,
+          item.deptName,
+          item.createTime,
+          item.netPay,
+          item.basicSalary,
+          item.heatingSubsidy,
+          item.sickLeaveDay,
+          item.personalLeaveDay,
+          item.overtimeDay,
+          item.lateDay,
+          item.sickLeaveDeduction,
+          item.personalLeaveDeduction,
+          item.overtimePay,
+          item.lateDeduction,
+          item.personalEndowmentInsurance,
+          item.companyEndowmentInsurance,
+          item.personalUnemploymentInsurance,
+          item.personalAccumulationFund,
+          item.companyAccumulationFund,
+          item.personalMedicalInsurance,
+          item.companyMedicalInsurance,
+          item.personalIncomeTax,
+          item.backPay
+        ]
+        tableData.push(rowData)
+      })
+      const ws = XLSX.utils.aoa_to_sheet(tableData)
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, '数据') // 工作簿名称
+      XLSX.writeFile(wb, this.deptName + time + '.xlsx') // 保存的文件名
+    },
     // 格式化时间
     dateFormat(row, column) {
       const date = row[column.property]
@@ -228,9 +308,7 @@ export default {
         })
         this.deptId = dept.id
       }
-      if (this.time === '0' || this.deptId === 0) {
-        this.getPrintItem()
-      }
+      this.getPrintItem()
     },
     // 选择月份变化
     timeChange (value) {
@@ -250,9 +328,7 @@ export default {
         this.$message.error('时间选择有误！')
         return
       }
-      if (this.time === '0' || this.deptId === 0) {
-        this.getPrintItem()
-      }
+      this.getPrintItem()
     }
   }
 }
