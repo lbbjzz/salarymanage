@@ -22,3 +22,11 @@ export function getMonthlySalaryStatByDeptId(deptId, month) {
     }
   })
 }
+
+// 查询员工统计
+export function getEmployeeSalaryStat() {
+  return request({
+    url: '/salary/getEmployeeSalaryStat',
+    method: 'get'
+  })
+}

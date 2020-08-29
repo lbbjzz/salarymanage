@@ -23,7 +23,7 @@
           :value="item.value">
         </el-option>
       </el-select>
-      <el-button style="float: right;margin-left: 10px" type="primary" icon="el-icon-search" @click="searchInfo">搜索
+      <el-button style="float: right;margin-left: 10px" type="primary" icon="el-icon-search" @click="searchByEmployeeId">搜索
       </el-button>
       <el-input
             placeholder="请输入需要员工ID"
@@ -34,7 +34,7 @@
     </div>
     <div></div>
     <el-table
-      :data="fixedSalaryList"
+      :data="salaryData"
       stripe
       style="width: 100%;margin-top: 20px">
       <el-table-column
@@ -71,7 +71,7 @@
         width="180">
       </el-table-column>
       <el-table-column
-        prop="basicSalary"
+        prop="basicSalaryTotal"
         label="基本工资"
         width="180">
       </el-table-column>
@@ -181,15 +181,13 @@
 </template>
 
 <script>
-import { listFixedSalaryVo, allDept, findEmployeeById, listCalculateVo } from '../../../network/FormManage/SalarySearchForm'
+import { getEmployeeSalaryStat } from '../../../network/FormManage/SalarySearchForm'
 
 export default {
   name: 'SalarySeachForm',
   data () {
     return {
-      fixedSalaryList: [],
-      calculateVoList: [],
-      allDept: [],
+      salaryData: [],
       employeeId: null,
       pageNo: 1,
       pageSize: 10,
@@ -237,9 +235,7 @@ export default {
     }
   },
   mounted () {
-    this.getListEmployeeFixedSalaryVo()
-    this.getAllDept()
-    this.getListCalculateVo()
+    this.getEmployeeSalaryStat()
   },
   methods: {
     // 页号改变
@@ -247,38 +243,17 @@ export default {
       this.pageNo = pageNo
       this.searchInfo()
     },
-    // 获取全部部门
-    getAllDept () {
-      allDept().then(res => {
-        if (res.code === 2000) {
-          this.allDept = res.data.allDept
-        }
-      })
-    },
-    getListCalculateVo () {
-      listCalculateVo(this.pageNo, this.pageSize, this.deptId, this.employeeName).then(res => {
-        if (res.code === 2000) {
-          this.calculateVoList = res.data.calculateVoList
-          this.total = res.data.total
-        }
-      })
-    },
-    // 获取员工固定工资
-    getListEmployeeFixedSalaryVo () {
-      listFixedSalaryVo(this.pageNo, this.pageSize, this.deptId, this.employeeName).then(res => {
+    // 获取全部信息
+    getEmployeeSalaryStat() {
+      getEmployeeSalaryStat().then(res => {
         if (res.code === 2000) {
           console.log(res)
-          this.fixedSalaryList = res.data.employeeFixedSalaryVos
-          this.total = res.data.total
+          this.salaryData = res.data.employeeSalaryStat
         }
       })
     },
-    // 根据员工ID查询员工信息
-    seachEmployeeById () {
-      findEmployeeById()
-    },
-    searchInfo () {
-      this.seachEmployeeById()
+    searchByEmployeeId () {
+
     }
   }
 }

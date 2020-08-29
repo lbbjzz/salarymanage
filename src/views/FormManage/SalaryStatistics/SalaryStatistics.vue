@@ -20,7 +20,7 @@
       style="margin-left: 20px"
       @change="getMonth">
     </el-date-picker>
-    <el-select @change="deptChange" style="margin-left: 50px" v-model="deptName" placeholder="请选择查询的部门">
+    <el-select v-show="value1 === '1'" @change="deptChange" style="margin-left: 50px" v-model="deptName" placeholder="请选择查询的部门">
       <el-option
         key="0"
         label="全部部门"
@@ -121,53 +121,44 @@
         label="员工姓名">
       </el-table-column>
       <el-table-column
-        prop="basicSalary"
+        prop="basicSalaryTotal"
         label="总基本工资"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="sickLeaveDeduction"
+        prop="sickLeaveDeductionTotal"
         label="总病假扣款"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="personalLeaveDeduction"
+        prop="personalLeaveDeductionTotal"
         label="总事假扣款"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="overtimePay"
+        prop="overtimePayTotal"
         label="总加班工资"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="lateDeduction"
+        prop="lateDeductionTotal"
         label="总迟到扣款"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="endowmentInsurance"
+        prop="endowmentInsuranceTotal"
         label="总养老保险"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="medicalInsurance"
+        prop="medicalInsuranceTotal"
         label="总医疗保险"
         width="200">
       </el-table-column>
       <el-table-column
-        prop="accumulationInsurance"
+        prop="accumulationFundTotal"
         label="总公积金"
         width="180">
-      </el-table-column>
-      <el-table-column
-        prop="personalIncomeTaxRate"
-        label="个人所得税"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="backPay"
-        label="补发">
       </el-table-column>
     </el-table>
     <!--分页-->
@@ -185,7 +176,7 @@
 </template>
 
 <script>
-import { getMonthlySalaryStat, getMonthlySalaryStatByDeptId } from '../../../network/FormManage/SalaryStatistics'
+import { getMonthlySalaryStat, getMonthlySalaryStatByDeptId, getEmployeeSalaryStat } from '../../../network/FormManage/SalaryStatistics'
 import { allDept } from '../../../network/salaryManage/fixedSalaryManage'
 
 export default {
@@ -223,6 +214,7 @@ export default {
     this.getMonthlySalary()
     this.getAllDept()
     this.getMonthlySalaryStatByDeptId()
+    this.getEmployeeSalaryStat()
   },
   methods: {
     // 页号改变
@@ -282,6 +274,15 @@ export default {
       time = this.time
       console.log(deptId, time)
       this.getMonthlySalaryStatByDeptId(deptId, time)
+    },
+    // 获取员工工资统计
+    getEmployeeSalaryStat() {
+      getEmployeeSalaryStat().then(res => {
+        if (res.code === 2000) {
+          console.log(res)
+          this.employeeData = res.data.employeeSalaryStat
+        }
+      })
     }
   }
 }
