@@ -30,3 +30,14 @@ export function getEmployeeSalaryStat() {
     method: 'get'
   })
 }
+
+// 查询所有公司的月度最高、最低、平均工资
+export function getCompMonthlySalaryStat(month) {
+  return request({
+    url: '/salary/getCompMonthlySalaryStat',
+    method: 'get',
+    params: {
+      month
+    }
+  })
+}
