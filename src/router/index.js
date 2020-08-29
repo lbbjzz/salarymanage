@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from '../store'
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
@@ -83,5 +84,19 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+router.beforeEach((to, from, next) => {
+  console.log(to)
+  if (to.name !== 'Login') {
+    console.log(store.state.token)
+    if (store.state.token === '') {
+      next('Login')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+}
+)
 
 export default router

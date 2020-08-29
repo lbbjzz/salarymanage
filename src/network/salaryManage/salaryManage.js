@@ -48,3 +48,11 @@ export function listImport (pageNo, pageSize, deptId, employeeName) {
     method: 'get'
   })
 }
+
+// 获取员工实发工资
+export function listNetPayVo (pageNo, pageSize, deptId, employeeName) {
+  return request({
+    url: '/salary/listNetPayVo/' + pageNo + '/' + pageSize + '/' + deptId + '/' + employeeName,
+    method: 'get'
+  })
+}

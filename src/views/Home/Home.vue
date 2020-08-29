@@ -3,10 +3,9 @@
         <el-col :span="8">
             <el-card shadow="hover" style="background-color:#FFFFF0;">
                 <div class="user">
-                    <img :src="userImg"/>
+                    <img :src="userImg" alt=""/>
                     <div class="userinfo">
-                        <p class="name">图书借阅管理系统</p>
-                        <p class="access">JavaEE实训项目</p>
+                        <p class="name">企业薪资管理系统</p>
                     </div>
                 </div>
             </el-card>
@@ -36,7 +35,7 @@
                 <el-card shadow="hover" v-for="item in countData" :key="item.value"
                          :body-style="{ display: 'flex', padding: 0 }"
                          style="background-color:#FFFAFA">
-                    <img class="icon" :src="item.icon"/>
+                    <img class="icon" :src="item.icon" alt=""/>
                     <div class="detail">
                         <p class="txt">{{ item.value }}</p>
                     </div>
@@ -62,7 +61,7 @@ export default {
       userImg: require('../../assets/images/user.png'),
       countData: [
         {
-          value: '前端开发：刘栋',
+          value: '组长：丁晨明',
           icon: require('../../assets/images/vue.png')
         },
         {
@@ -70,7 +69,19 @@ export default {
           icon: require('../../assets/images/spring.png')
         },
         {
-          value: '后端开发：余婉瑶',
+          value: '前端开发：余婉瑶',
+          icon: require('../../assets/images/spring.png')
+        },
+        {
+          value: '前端开发：刘栋',
+          icon: require('../../assets/images/vue.png')
+        },
+        {
+          value: '后端开发：刘嘉伟',
+          icon: require('../../assets/images/spring.png')
+        },
+        {
+          value: '后端开发：张微如',
           icon: require('../../assets/images/spring.png')
         }
       ],

@@ -83,6 +83,7 @@
       </el-table-column>
     </el-table>
     <el-pagination
+      v-if="total > pageSize"
       style="padding-top: 20px"
       class="pager"
       background layout="prev, pager, next"
@@ -110,7 +111,7 @@ export default {
     return {
       total: null,
       pageNo: 1,
-      pageSize: 1,
+      pageSize: 10,
       jobList: [],
       formLabelWidth: '100px',
       edit: false,

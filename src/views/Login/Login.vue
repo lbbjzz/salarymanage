@@ -129,6 +129,10 @@ export default {
             message: this.$t('language.login_success'),
             type: 'success'
           })
+          const token = res.data.token
+          const adminId = res.data.adminId
+          this.$store.commit('setToken', token)
+          this.$store.commit('setAdminId', adminId)
           this.$router.push({ path: 'Home' })
         }
       })

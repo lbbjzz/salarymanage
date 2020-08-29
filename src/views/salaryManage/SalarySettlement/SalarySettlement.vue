@@ -21,15 +21,14 @@
       type="month"
       placeholder="选择月">
     </el-date-picker>
-    <div>
-      <el-button v-show="!isSend" style="margin-top: 20px;">暂存</el-button>
-      <el-button v-show="!isSend || isStorage" style="margin-top: 20px;">发放</el-button>
+    <div v-if="!isSend">
+      <el-button v-show="!isStorage" plain style="margin-top: 20px;" @click="storageSalary">暂存工资</el-button>
+      <el-button v-show="isStorage" type="primary" plain style="margin-top: 20px;" @click="sendStorageSalary">发放工资</el-button>
     </div>
     <el-table
       :data="salaryVoList"
       stripe
-      style="width: 100%;margin-top: 20px"
-      @select="handleSelect">
+      style="width: 100%;margin-top: 20px">
       <el-table-column
         prop="id"
         label="编号"
@@ -217,7 +216,7 @@
 
 <script>
 import { allDept } from '../../../network/salaryManage/fixedSalaryManage'
-import { listSalaryVO, judgeSendSalary, updateSalaryStorage } from '../../../network/salaryManage/salarySettlement.vue'
+import { listSalaryVO, judgeSendSalary, updateSalaryStorage, generateSalary, sendSalary } from '../../../network/salaryManage/salarySettlement.vue'
 import moment from 'moment'
 export default {
   name: 'SalarySettlement',
@@ -302,6 +301,7 @@ export default {
           if (this.isSend) {
             this.getListSalaryVO()
           } else {
+            this.isStorage = false
             this.$message.error(this.deptName + '在' + this.time + '月没有发放工资！')
           }
         }
@@ -316,6 +316,7 @@ export default {
           this.isSend = true
           if (isStorage !== undefined) {
             this.isStorage = isStorage
+            this.isSend = !this.isStorage
           } else {
             this.isStorage = false
           }
@@ -330,16 +331,6 @@ export default {
           this.allDept = res.data.allDept
         }
       })
-    },
-    handleSelect(val, row) {
-      if (val.length > 0) {
-        this.$refs.multipleTable.toggleRowSelection(row) //  选中当前选择
-        val.shift()
-        this.$refs.multipleTable.toggleRowSelection(row) //  选中当前选择
-        this.check = true
-      } else {
-        this.check = false
-      }
     },
     // 页号改变
     pageNoChange (pageNo) {
@@ -406,6 +397,33 @@ export default {
         if (res.code === 2000) {
           this.judgeSendSalary()
           this.editVisible = false
+        }
+      })
+    },
+    // 暂存工资
+    storageSalary () {
+      if (this.deptId === 0 || this.time === '0') {
+        this.$message.error('时间和部门有误！')
+        return
+      }
+      // 生成暂存工资
+      generateSalary(this.deptId, this.time).then(res => {
+        if (res.code === 2000) {
+          this.$message.success(this.deptName + '在' + this.time + '月工资发放中！！')
+          this.judgeSendSalary()
+        }
+      })
+    },
+    sendStorageSalary () {
+      if (this.deptId === 0 || this.time === '0') {
+        this.$message.error('时间和部门有误！')
+        return
+      }
+      // 生成暂存工资
+      sendSalary(this.deptId, this.time).then(res => {
+        if (res.code === 2000) {
+          this.$message.success(this.deptName + '在' + this.time + '月工资发放成功！')
+          this.judgeSendSalary()
         }
       })
     }

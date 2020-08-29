@@ -47,6 +47,8 @@ export default {
       this.$store.commit('collapseMenu')
     },
     logOut () {
+      this.$store.commit('setToken', '')
+      this.$store.commit('setAdminId', null)
       window.sessionStorage.clear()
       this.$router.push('/login')
     }
