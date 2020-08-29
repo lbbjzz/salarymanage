@@ -12,6 +12,9 @@ import ECharts from './components/ECharts'
 
 import moment from 'moment'
 
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+
 /* ---------挂载全局使用----------- */
 Vue.use(ElementUI)
 Vue.use(VueI18n)
