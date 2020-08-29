@@ -23,7 +23,6 @@ Vue.use(ECharts)
 // axios.defaults.baseURL = 'http://localhost:8001'
 
 // Vue.prototype.$http = axios
-
 // 携带cookie信息
 axios.defaults.withCredentials = true
 

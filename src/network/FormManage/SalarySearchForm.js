@@ -1,9 +1,16 @@
 import { request } from '@/network/request'
 
-// 查询员工工资
-export function getEmployeeSalaryStat() {
+// 查询
+export function getEmployeeSalaryStat(pageNo, pageSize, beginDate, endDate, deptName) {
   return request({
-    url: '/salary/getEmployeeSalaryStat',
-    method: 'get'
+    url: '/salary/listSalaryVoDetail',
+    method: 'get',
+    params: {
+      pageNo,
+      pageSize,
+      beginDate,
+      endDate,
+      deptName
+    }
   })
 }
