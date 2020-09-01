@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { AllPrintItem , allSalaryVO } from '@/network/FormManage/SalaryPrint'
+import { AllPrintItem, allSalaryVO } from '@/network/FormManage/SalaryPrint'
 import moment from 'moment'
 import { allDept } from '@/network/salaryManage/fixedSalaryManage'
 import XLSX from 'xlsx'

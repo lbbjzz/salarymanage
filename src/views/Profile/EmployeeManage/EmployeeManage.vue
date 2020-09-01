@@ -153,11 +153,12 @@
       <el-table-column
         prop="sex"
         label="性别"
-        width="180">
+        :formatter="sexFormat"
+        width="150">
       </el-table-column>
       <el-table-column
-        prop="birth"
-        label="生日"
+        prop="age"
+        label="年龄"
         width="180">
       </el-table-column>
       <el-table-column
@@ -527,6 +528,14 @@ export default {
     pageNoChange(pageNo) {
       this.pageNo = pageNo
       this.getEmployeeList()
+    },
+    sexFormat (row, column) {
+      const sex = row[column.property]
+      if (sex) {
+        return '女'
+      } else {
+        return '男'
+      }
     }
   }
 }
